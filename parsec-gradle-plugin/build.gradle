@@ -1,0 +1,66 @@
+buildscript{
+    repositories{
+        maven{
+            url "https://plugins.gradle.org/m2/"
+        }
+        jcenter()
+    }
+    dependencies{
+        classpath group: 'com.gradle.publish', name: 'plugin-publish-plugin', version: '0.9.4'
+    }
+}
+
+apply plugin: 'pmd'
+apply plugin: "com.gradle.plugin-publish"
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile gradleApi()
+    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.9'
+    compile group: 'commons-codec'     , name: 'commons-codec'   , version: '1.10'
+}
+
+pluginBundle {
+    website = 'http://www.gradle.org/' //TODO: replace with official link
+    vcsUrl = 'https://github.com/gradle/gradle' //TODO: replace with official github
+    description = 'Parsec gradle plugin'
+    tags = ['gradle-plugin', 'parsec']
+    plugins {
+        parsecGradlePlugin {
+            id = 'com.yahoo.parsec.gradle-plugin'
+            displayName = 'Parsec Gradle Plugin'
+        }
+    }
+}
+
+tasks.getByName('release').outputs.upToDateWhen {
+    parsecGradlePluginVersion.toString() > releasedVersion.toString()
+}
+
+postProcess << {
+    def readme = new File("${projectDir}/README.md")
+    def releaseVersion = project.property("release.version")
+    def parentProperties = new File("${parent.projectDir}/gradle.properties")
+    ant.replaceregexp(file: readme, match: "version : '\\S+'", replace: "version : '${releaseVersion}'")
+    ant.replaceregexp(file: parentProperties, match: "parsecGradlePluginVersion\\s*=\\s*\\S+", replace: "parsecGradlePluginVersion = ${releaseVersion}")
+}
+
+task downloadParsecRdl(type: Exec){
+    commandLine "sh", "./download_parsec_rdl.sh", project.property("parsecRdlVersion"), projectDir.absolutePath
+    outputs.upToDateWhen {
+        //Return upToDate when parsec_rdl version matches
+        def line = new File("${projectDir.absolutePath}/src/main/resources/rdl_bin/maven-metadata.xml").readLines().get(0)
+        return (line && line == project.property("parsecRdlVersion"))
+    }
+}
+
+jar.dependsOn downloadParsecRdl
+publishPlugins.dependsOn downloadParsecRdl
+publishPlugins.mustRunAfter check
+postProcess.dependsOn publishPlugins

@@ -1,0 +1,12 @@
+<FindBugsFilter>
+    <Match>
+        <Package name="~.*\.parsec_generated" />
+    </Match>
+
+    <Match>
+        <Class name="~.*\.*Test" />
+        <Not>
+            <Bug code="IJU" />
+        </Not>
+    </Match>
+</FindBugsFilter>

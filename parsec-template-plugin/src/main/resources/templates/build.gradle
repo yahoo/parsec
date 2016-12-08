@@ -1,0 +1,15 @@
+apply from: '${applyFromPath}'
+
+group = '${projectGroup}'
+
+buildscript {
+    //additional buildscript components
+}
+
+repositories {
+    //additional repositories
+}
+
+dependencies {
+    //additional dependencies
+}

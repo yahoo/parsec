@@ -1,0 +1,8 @@
+.gradle/
+.idea/
+build/
+local_test/
+repo/
+release_test/
+.DS_Store
+sandbox/

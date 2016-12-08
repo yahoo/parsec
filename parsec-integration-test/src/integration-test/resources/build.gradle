@@ -1,0 +1,21 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven{
+            url 'http://dl.bintray.com/cjstehno/public'
+        }
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath group: 'com.yahoo.parsec', name: 'parsec-template-plugin', version: '${parsecTemplateVersion}'
+    }
+}
+
+apply plugin: com.yahoo.parsec.template.ParsecTemplatePlugin
+
+parsecTemplate{
+    extraTemplate {
+        'build.gradle' template: './build.gradle.tmpl'
+    }
+}

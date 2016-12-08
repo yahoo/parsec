@@ -1,0 +1,156 @@
+// Copyright 2016 Yahoo Inc.
+// Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
+
+package com.yahoo.parsec.gradle;
+
+/**
+ * @author sho
+ */
+public class ParsecPluginExtension {
+
+    /**
+     * The path where RDL files ({@code *.rdl}) are located.
+     */
+    private String sourcePath = "src/main/rdl";
+
+    /**
+     * The RDL file(s) to parse, comma separated. If not present, all .rdl files in the source path
+     * are processed.  The filenames here can also be absolute, and override the source path.
+     */
+    private String sourceFiles = "*.rdl";
+
+    /**
+     * If not empty, the value will be put in frontend of the generated swagger schema's endpoint
+     */
+    private String swaggerRootPath = "";
+
+    /**
+     * If set to true (the default), the generated code will include model classes for the RDL types.
+     */
+    private boolean generateModel = true;
+
+    /**
+     * If set to true (the default), the generated code will include JAX-RS (jersey) server classes,
+     * using the XxxHandler interface (with a context).
+     */
+    private boolean generateServer = true;
+
+    /**
+     * If set to true, the generated code will include swagger resources
+     */
+    private boolean generateSwagger = true;
+
+    /**
+     * If set to true, the generated code will include json resources
+     */
+    private boolean generateJson = false;
+
+    /**
+     * If set to true, the generated code will include handlers' implementation
+     */
+    private boolean generateHandlerImpl = true;
+
+    /**
+     * If set to true, the generators will generate parsec error objects.
+     */
+    private boolean generateParsecError = false;
+
+    /**
+     * If set to true, the generators will use resource params for generating resource and handler method names
+     */
+    private boolean useSmartMethodNames = true;
+
+    /**
+     * If set to true, the generators will generate exception mapper for handling uncaught exception
+     */
+    private boolean handleUncaughtExceptions = false;
+
+
+    public String getSourcePath() {
+        return sourcePath;
+    }
+
+    public void setSourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
+    }
+
+    public String getSourceFiles() {
+        return sourceFiles;
+    }
+
+    public void setSourceFiles(String sourceFiles) {
+        this.sourceFiles = sourceFiles;
+    }
+
+    public String getSwaggerRootPath() {
+        return swaggerRootPath;
+    }
+
+    public void setSwaggerRootPath(String swaggerRootPath) {
+        this.swaggerRootPath = swaggerRootPath;
+    }
+
+    public boolean isGenerateModel() {
+        return generateModel;
+    }
+
+    public void setGenerateModel(boolean generateModel) {
+        this.generateModel = generateModel;
+    }
+
+    public boolean isGenerateServer() {
+        return generateServer;
+    }
+
+    public void setGenerateServer(boolean generateServer) {
+        this.generateServer = generateServer;
+    }
+
+    public boolean isGenerateSwagger() {
+        return generateSwagger;
+    }
+
+    public void setGenerateSwagger(boolean generateSwagger) {
+        this.generateSwagger = generateSwagger;
+    }
+
+    public boolean isGenerateJson() {
+        return generateJson;
+    }
+
+    public void setGenerateJson(boolean generateJson) {
+        this.generateJson = generateJson;
+    }
+
+    public boolean isGenerateHandlerImpl() {
+        return generateHandlerImpl;
+    }
+
+    public void setGenerateHandlerImpl(boolean generateHandlerImpl) {
+        this.generateHandlerImpl = generateHandlerImpl;
+    }
+
+    public boolean isGenerateParsecError() {
+        return generateParsecError;
+    }
+
+    public void setGenerateParsecError(boolean generateParsecError) {
+        this.generateParsecError = generateParsecError;
+    }
+
+    public boolean isUseSmartMethodNames() {
+        return useSmartMethodNames;
+    }
+
+    public void setUseSmartMethodNames(boolean useSmartMethodNames) {
+        this.useSmartMethodNames = useSmartMethodNames;
+    }
+
+    public boolean isHandleUncaughtExceptions() {
+        return handleUncaughtExceptions;
+    }
+
+    public void setHandleUncaughtExceptions(boolean handleUncaughtExceptions) {
+        this.handleUncaughtExceptions = handleUncaughtExceptions;
+    }
+}

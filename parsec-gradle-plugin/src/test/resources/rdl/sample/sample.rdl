@@ -1,0 +1,50 @@
+namespace com.example;
+name sample;
+version 1;
+
+type User struct {
+    string name (x_not_null="groups=insert", x_size="min=3,max=5,groups=update|insert");
+    string occupation (x_not_null="groups=update", x_size="min=4,groups=update|insert");
+    int32 age;
+    string id (x_null="groups=insert");
+}
+
+resource User GET "/users/{id}" {
+    int32 id;
+
+    expected OK;
+    exceptions {
+        ResourceError INTERNAL_SERVER_ERROR;
+        ResourceError BAD_REQUEST;
+        ResourceError UNAUTHORIZED;
+        ResourceError FORBIDDEN;
+    }
+}
+
+resource string POST "/users" {
+    User user (x_must_validate="insert");
+
+    expected OK;
+    exceptions {
+        ResourceError INTERNAL_SERVER_ERROR;
+        ResourceError BAD_REQUEST;
+        ResourceError UNAUTHORIZED;
+        ResourceError FORBIDDEN;
+    }
+}
+
+resource string PUT "/users/{id}" {
+    int32 id ;
+
+    User user (x_must_validate="update");
+
+    expected OK;
+    exceptions {
+        ResourceError INTERNAL_SERVER_ERROR;
+        ResourceError BAD_REQUEST;
+        ResourceError UNAUTHORIZED;
+        ResourceError FORBIDDEN;
+    }
+
+}
+

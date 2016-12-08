@@ -1,0 +1,32 @@
+namespace ${groupName};
+name sample;
+version 1;
+
+type User struct {
+    string name (x_size="min=3,max=5");
+    int32 age;
+}
+
+resource User GET "/users/{id}" {
+    int32 id;
+
+    expected OK;
+    exceptions {
+        ResourceError INTERNAL_SERVER_ERROR;
+        ResourceError BAD_REQUEST;
+        ResourceError UNAUTHORIZED;
+        ResourceError FORBIDDEN;
+    }
+}
+
+resource string POST "/users" {
+    User user (x_must_validate);
+
+    expected OK;
+    exceptions {
+        ResourceError INTERNAL_SERVER_ERROR;
+        ResourceError BAD_REQUEST;
+        ResourceError UNAUTHORIZED;
+        ResourceError FORBIDDEN;
+    }
+}

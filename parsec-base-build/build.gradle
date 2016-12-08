@@ -1,0 +1,66 @@
+buildscript{
+    repositories{
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        jcenter()
+    }
+
+    dependencies{
+        classpath group: 'com.jfrog.bintray.gradle' , name: 'gradle-bintray-plugin', version: '1.7'
+    }
+}
+/*
+apply plugin: 'com.jfrog.bintray'
+
+
+bintray {
+    user = bintrayUser
+    key = bintrayKey
+
+    filesSpec {
+        from "./src/main/resources"
+        into "./com/yahoo/parsec/${bintrayPackage}/${project.property("release.version")}"
+    }
+
+    publish = true
+
+    pkg {
+        repo = bintrayRepo
+        name = bintrayPackage
+        licenses = ['Apache-2.0']
+        vcsUrl = bintrayVcsURL
+    }
+
+    pkg.version {
+        name = project.property("release.version")
+    }
+}
+
+tasks.getByName('release').outputs.upToDateWhen {
+    parsecBaseBuildVersion.toString() > releasedVersion.toString()
+}
+
+preProcess << {
+    def releaseVersion = project.property("release.version")
+    def baseBuildProperties = new File("${project(':parsec-base-build').projectDir}/src/main/resources/gradle.properties")
+    ant.replaceregexp(file: baseBuildProperties, match: "parsecGradleVersion\\s*=\\s*\\S+", replace: "parsecGradleVersion = ${releaseVersion}")
+}
+
+bintrayUpload.mustRunAfter check
+postProcess.dependsOn bintrayUpload
+postProcess << {
+    def readme = new File("${projectDir}/README.md")
+    def releaseVersion = project.property("release.version")
+    def parentProperties = new File("${parent.projectDir}/gradle.properties")
+    ant.replaceregexp(file: readme, match: "com/yahoo/parsec/parsec-base-build/\\S+/parsec.gradle", replace: "com/yahoo/parsec/parsec-base-build/${releaseVersion}/parsec.gradle")
+    ant.replaceregexp(file: parentProperties, match: "parsecBaseBuildVersion\\s*=\\s*\\S+", replace: "parsecBaseBuildVersion = ${releaseVersion}")
+}
+
+repositories{
+}
+
+dependencies{
+    testCompile gradleTestKit()
+}
+*/

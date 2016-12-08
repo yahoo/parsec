@@ -1,0 +1,137 @@
+/**
+ * @author waynewu
+ */
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath group: 'net.researchgate'        , name: 'gradle-release'         , version: '2.4.0'
+        classpath group: 'org.kt3k.gradle.plugin'  , name: 'coveralls-gradle-plugin', version: '2.6.3'
+    }
+}
+
+apply plugin: 'com.github.kt3k.coveralls'
+
+
+allprojects {
+    group = 'com.yahoo.parsec'
+
+    apply plugin: 'java'
+    apply plugin: 'groovy'
+    apply plugin: 'jacoco'
+    apply plugin: 'net.researchgate.release'
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+    }
+
+    //Get release version, needs to be evaluated first before going into subprojects
+    if(project.properties['release.useAutomaticVersion'] == 'true'){
+        if(project.hasProperty('release.releaseVersion')) {
+            project.ext.set('release.version', project.property('release.releaseVersion'))
+        }else {
+            def releaseVersion = project.version.toString()
+            if (releaseVersion.contains('-SNAPSHOT')) {
+                releaseVersion -= '-SNAPSHOT'
+            }
+            project.ext.set('release.version', releaseVersion)
+        }
+    }
+
+    release {
+        failOnUnversionedFiles = false
+        failOnCommitNeeded = false
+        failOnSnapshotDependencies = false
+    }
+
+    task preProcess << {
+        logger.info("Executing Pre Release Build Processes...")
+    }
+
+    task postProcess << {
+        logger.info("Executing Post Release Build Processes...")
+    }
+
+    beforeReleaseBuild.dependsOn preProcess
+    afterReleaseBuild.dependsOn postProcess
+}
+
+subprojects {
+    apply plugin: 'maven'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4'
+        testCompile group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4'
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        testCompile group: 'cglib', name: 'cglib-nodep', version: '2.2'
+    }
+
+    release{
+        tagTemplate = '$name-$version'
+    }
+
+    //Only the root project will create a release tag
+    createReleaseTag.enabled = false
+}
+
+def publishedProjects = subprojects.findAll()
+
+release {
+    buildTasks = ['releaseParsecGradlePlugin', 'releaseParsecBaseBuild', 'releaseParsecTemplatePlugin']
+}
+
+//Temporary tasks for a work around on task ordering with release plugin
+task releaseParsecGradlePlugin{ dependsOn('parsec-gradle-plugin:release') }
+task releaseParsecBaseBuild{ dependsOn('parsec-base-build:release') }
+task releaseParsecTemplatePlugin { dependsOn('parsec-template-plugin:release') }
+
+updateVersion << {
+    def readme = new File("./README.md")
+    def properties = new File("./gradle.properties")
+    def releaseVersion = project.property("release.version")
+    ant.replaceregexp(file: properties, match: "releasedVersion\\s*=\\s*\\S+", replace: "releasedVersion = ${releaseVersion}")
+}
+
+
+task jacocoRootReport (type: JacocoReport, group: 'Coverage reports'){
+    description = 'Generates an aggregate report from all subprojects'
+    dependsOn(publishedProjects.test)
+
+    additionalSourceDirs = files(publishedProjects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories = files(publishedProjects.sourceSets.main.allSource.srcDirs)
+    classDirectories = files(publishedProjects.sourceSets.main.output)
+    executionData = files(publishedProjects.jacocoTestReport.executionData)
+
+    reports {
+        html.enabled = true
+        xml.enabled = true
+    }
+
+    doFirst {
+        executionData = files(executionData.findAll { it.exists() })
+    }
+}
+
+coveralls {
+    sourceDirs = publishedProjects.sourceSets.main.allSource.srcDirs.flatten()
+    jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
+
+}
+
+tasks.coveralls {
+    dependsOn(jacocoRootReport)
+}
+
+check.dependsOn(":parsec-integration-test:integrationTest")
