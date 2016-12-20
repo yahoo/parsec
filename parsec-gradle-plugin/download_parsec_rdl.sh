@@ -8,7 +8,9 @@ METADATA_FILE=maven-metadata.xml
 BINTRAY_HOST="https://dl.bintray.com/wayne-wu"
 BINTRAY_REPO="gradle"
 BINTRAY_PATH="com/yahoo/parsec/rdl_bin"
-DESTINATION_PATH=$DESTINATION_DIR/src/main/resources/rdl_bin
+##FIXME
+##DESTINATION_PATH=$DESTINATION_DIR/src/main/resources/rdl_bin
+DESTINATION_PATH=$DESTINATION_DIR/src/main/resources/rdl-bin
 TMP_PATH=/tmp
 DIST_FILE=parsec_rdl.zip
 
