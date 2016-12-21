@@ -48,7 +48,7 @@ class ParsecGenerateTest extends Specification {
             def tempDir = projectDir.absolutePath
 
             prepareParseRDL(fileUtils, tempDir)
-
+            def files = projectDir.listFiles()
             pluginExtension.handleUncaughtExceptions = handleUncaughtExceptions
             pluginExtension.generateParsecError = generateParsecError
 
@@ -91,7 +91,7 @@ class ParsecGenerateTest extends Specification {
 
         where:
             handleUncaughtExceptions | generateParsecError | parsecErrorGenerated
-            false                    | false               | false
+            false                    | false               | true
             true                     | false               | true
             false                    | true                | true
             true                     | true                | true
