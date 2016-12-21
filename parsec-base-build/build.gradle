@@ -7,36 +7,11 @@ buildscript{
     }
 
     dependencies{
-        classpath group: 'com.jfrog.bintray.gradle' , name: 'gradle-bintray-plugin', version: '1.7'
+        classpath group: 'com.jfrog.bintray.gradle' , name: 'gradle-bintray-plugin', version: '1.7.3'
     }
 }
+
 /*
-apply plugin: 'com.jfrog.bintray'
-
-
-bintray {
-    user = bintrayUser
-    key = bintrayKey
-
-    filesSpec {
-        from "./src/main/resources"
-        into "./com/yahoo/parsec/${bintrayPackage}/${project.property("release.version")}"
-    }
-
-    publish = true
-
-    pkg {
-        repo = bintrayRepo
-        name = bintrayPackage
-        licenses = ['Apache-2.0']
-        vcsUrl = bintrayVcsURL
-    }
-
-    pkg.version {
-        name = project.property("release.version")
-    }
-}
-
 tasks.getByName('release').outputs.upToDateWhen {
     parsecBaseBuildVersion.toString() > releasedVersion.toString()
 }
