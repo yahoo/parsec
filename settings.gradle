@@ -5,7 +5,8 @@
 include 'parsec-base-build'
 include 'parsec-gradle-plugin'
 include 'parsec-template-plugin'
-include 'parsec-integration-test'
+//commented first per team members' discussions on 2016/12/21(Wed)
+//include 'parsec-integration-test'
 
 rootProject.name = 'parsec'
 
