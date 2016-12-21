@@ -64,7 +64,7 @@ public class ParsecInitTask extends AbstractParsecGradleTask {
                     );
                 }
             }
-
+            String test = pathUtils.getBinPath();
             if (pluginExtension.isGenerateSwagger()) {
                 String swaggerUIPath = pathUtils.getSwaggerUIPath();
 
@@ -90,7 +90,10 @@ public class ParsecInitTask extends AbstractParsecGradleTask {
      */
     void extractParsecRdlGenerator(final String rdlBinSuffix, final String generator) throws IOException {
         final File file = fileUtils.getFileFromResource("/rdl-gen/rdl-gen.zip");
-        final String generatorBinary = PathUtils.RDL_GEN_PARSEC_PREFIX + generator;
+        String generatorBinary;
+
+        generatorBinary = PathUtils.RDL_GEN_PARSEC_PREFIX + generator;
+
 
         try (
             ZipFile zipFile = new ZipFile(file);
