@@ -8,15 +8,13 @@ import com.yahoo.parsec.gradle.generators.ParsecGeneratorUtil;
 import com.yahoo.parsec.gradle.generators.ParsecPackageResolver;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.TaskExecutionException;
+import org.testng.Assert;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author sho
@@ -55,6 +53,7 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
             }
 
             getLogger().info("RDL files: " + files.size());
+            getLogger().error("RDL file list: " + files);
 
             // Leave if no files found
             if (files.size() == 0) {
@@ -80,13 +79,13 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                     List<String> options = new ArrayList<>();
                     options.add("-o");
                     options.add(pathUtils.getDocPath());
-                    if (!pluginExtension.getSwaggerRootPath().isEmpty()) {
-                        options.add("-xr");
-                        options.add(pluginExtension.getSwaggerRootPath());
-                    }
-                    if (pluginExtension.isGenerateParsecError()) {
-                        options.add("-xg");
-                    }
+//                    if (!pluginExtension.getSwaggerRootPath().isEmpty()) {
+//                        options.add("-xr");
+//                        options.add(pluginExtension.getSwaggerRootPath());
+//                    }
+//                    if (pluginExtension.isGenerateParsecError()) {
+//                        options.add("-xg");
+//                    }
                     rdlGenerate(pathUtils.getRdlBinaryPath(), "parsec-swagger", file, options);
                 }
 
@@ -112,15 +111,15 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                     List<String> options = new ArrayList<>();
                     options.add("-o");
                     options.add(pathUtils.getGeneratedSourcesPath());
-                    if (pluginExtension.isGenerateHandlerImpl()) {
-                        options.add("-xi");
-                    }
-                    if (pluginExtension.isUseSmartMethodNames()) {
-                        options.add("-xp");
-                    }
-                    if (pluginExtension.isGenerateParsecError()) {
-                        options.add("-xg");
-                    }
+//                    if (pluginExtension.isGenerateHandlerImpl()) {
+//                        options.add("-xi");
+//                    }
+//                    if (pluginExtension.isUseSmartMethodNames()) {
+//                        options.add("-xp");
+//                    }
+//                    if (pluginExtension.isGenerateParsecError()) {
+//                        options.add("-xg");
+//                    }
                     rdlGenerate(
                         pathUtils.getRdlBinaryPath(),
                         "parsec-java-server",
@@ -234,17 +233,21 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
         List<String> options
     ) throws TaskExecutionException {
         try {
+            File f = new File(executable);
             List<String> command =  new ArrayList<>();
-            command.add("PATH=" + pathUtils.getBinPath());
             command.addAll(Arrays.asList(executable, "generate", type, sourcePath));
             command.addAll(2, options);
 
-            getLogger().info("    Generating " + type);
+            getLogger().info(" Generating " + type);
             ProcessBuilder processBuilder = new ProcessBuilder(command)
                 .directory(getProject().getProjectDir())
                 .inheritIO();
 
+            // Add execute PATH
+            Map<String, String> env = processBuilder.environment();
+            env.put("PATH", pathUtils.getBinPath());
             Process process = processBuilder.start();
+
             int errorCode = process.waitFor();
             if (errorCode != 0) {
                 throw new IOException("Error parsing RDL file " + sourcePath);

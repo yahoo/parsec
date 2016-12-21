@@ -41,7 +41,7 @@ class ParsecInitializationTest extends Specification {
             task.executeTask()
 
         then:
-            def parsecBin = new File(pathUtils.getBinPath() + '/parsec_rdl')
+            def parsecBin = new File(pathUtils.getBinPath() + '/rdl')
             parsecBin.exists()
             parsecBin.isFile()
 
