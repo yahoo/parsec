@@ -143,8 +143,7 @@ updateVersion << {
 
 task jacocoRootReport (type: JacocoReport, group: 'Coverage reports'){
     description = 'Generates an aggregate report from all subprojects'
-    //FIXME
-    //dependsOn(publishedProjects.test)
+    dependsOn(publishedProjects.test)
 
     additionalSourceDirs = files(publishedProjects.sourceSets.main.allSource.srcDirs)
     sourceDirectories = files(publishedProjects.sourceSets.main.allSource.srcDirs)
@@ -171,5 +170,5 @@ tasks.coveralls {
     dependsOn(jacocoRootReport)
 }
 
-//FIXME
+//commented first per team members' discussions on 2016/12/21(Wed)
 //check.dependsOn(":parsec-integration-test:integrationTest")

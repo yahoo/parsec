@@ -55,8 +55,6 @@ task downloadParsecRdl(type: Exec){
     commandLine "sh", "./download_parsec_rdl.sh", project.property("parsecRdlVersion"), projectDir.absolutePath
     outputs.upToDateWhen {
         //Return upToDate when parsec_rdl version matches
-        //FIXME
-        //def line = new File("${projectDir.absolutePath}/src/main/resources/rdl_bin/maven-metadata.xml").readLines().get(0)
         def line = new File("${projectDir.absolutePath}/src/main/resources/rdl-bin/metadata.xml").readLines().get(0)
         return (line && line == project.property("parsecRdlVersion"))
     }
