@@ -9,7 +9,7 @@ cache:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
 script:
-- ./gradlew bintrayUpload
+- test "${TRAVIS_PULL_REQUEST}" == "true" || test "${TRAVIS_BRANCH}" != "master" || ./gradlew bintrayUpload
 after_success:
 - ./gradlew coveralls
 env:
