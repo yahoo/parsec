@@ -105,7 +105,7 @@ subprojects {
         }
 
         pkg.version {
-            name = project.property("versionPrefix") + System.getenv('TRAVIS_BUILD_NUMBER') + '-pre'
+            name = project.property("version") + System.getenv('TRAVIS_BUILD_NUMBER') + '-pre'
         }
     }
 
