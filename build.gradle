@@ -63,6 +63,7 @@ allprojects {
     afterReleaseBuild.dependsOn postProcess
 }
 
+
 subprojects {
     apply plugin: 'maven'
     apply plugin: 'com.jfrog.bintray'
@@ -104,7 +105,7 @@ subprojects {
         }
 
         pkg.version {
-            name = project.property("release.version")
+            name = project.property("versionPrefix") + System.getenv('TRAVIS_BUILD_NUMBER') + '-pre'
         }
     }
 
@@ -139,7 +140,6 @@ updateVersion << {
     def releaseVersion = project.property("release.version")
     ant.replaceregexp(file: properties, match: "releasedVersion\\s*=\\s*\\S+", replace: "releasedVersion = ${releaseVersion}")
 }
-
 
 task jacocoRootReport (type: JacocoReport, group: 'Coverage reports'){
     description = 'Generates an aggregate report from all subprojects'
