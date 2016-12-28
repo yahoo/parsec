@@ -76,3 +76,4 @@ jar.dependsOn downloadParsecRdl
 publishPlugins.dependsOn downloadParsecRdl
 publishPlugins.mustRunAfter check
 postProcess.dependsOn publishPlugins
+test.dependsOn downloadParsecRdl
