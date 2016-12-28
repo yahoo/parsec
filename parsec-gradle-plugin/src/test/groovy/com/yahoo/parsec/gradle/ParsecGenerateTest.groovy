@@ -206,6 +206,7 @@ class ParsecGenerateTest extends Specification {
             pluginExtension.generateHandlerImpl = false
             pluginExtension.generateJson = false
             pluginExtension.handleUncaughtExceptions = false
+            pluginExtension.generateClient = false
 
         when:
             task.executeTask()

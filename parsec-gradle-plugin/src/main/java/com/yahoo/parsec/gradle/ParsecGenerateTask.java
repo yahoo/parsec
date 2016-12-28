@@ -75,6 +75,15 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                 getLogger().info("");
                 getLogger().info("Parsing " + file);
 
+                if (pluginExtension.isGenerateClient()) {
+                    rdlGenerate(
+                            pathUtils.getRdlBinaryPath(),
+                            "parsec-java-client",
+                            file,
+                            Arrays.asList("-o", pathUtils.getGeneratedSourcesPath())
+                    );
+                }
+
                 if (pluginExtension.isGenerateSwagger()) {
                     List<String> options = new ArrayList<>();
                     options.add("-o");

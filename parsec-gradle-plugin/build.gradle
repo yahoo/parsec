@@ -13,6 +13,7 @@ buildscript{
 apply plugin: 'pmd'
 apply plugin: "com.gradle.plugin-publish"
 
+
 sourceCompatibility = 1.8
 
 repositories {
@@ -51,12 +52,23 @@ postProcess << {
     ant.replaceregexp(file: parentProperties, match: "parsecGradlePluginVersion\\s*=\\s*\\S+", replace: "parsecGradlePluginVersion = ${releaseVersion}")
 }
 
-task downloadParsecRdl(type: Exec){
-    commandLine "sh", "./download_parsec_rdl.sh", project.property("parsecRdlVersion"), projectDir.absolutePath
+task downloadParsecRdl(type: Exec) {
+//    commandLine "sh", "./download_parsec_rdl.sh", project.property("parsecRdlVersion"), projectDir.absolutePath
+//    outputs.upToDateWhen {
+//        //Return upToDate when parsec_rdl version matches
+//        def line = new File("${projectDir.absolutePath}/src/main/resources/rdl-bin/metadata.xml").readLines().get(0)
+//        return (line && line == project.property("parsecRdlVersion"))
+//    }
+    commandLine "sh", "./download_parsec_rdl_generator.sh", project.property("parsecRdlGeneratorVersion"), projectDir.absolutePath
     outputs.upToDateWhen {
-        //Return upToDate when parsec_rdl version matches
-        def line = new File("${projectDir.absolutePath}/src/main/resources/rdl-bin/metadata.xml").readLines().get(0)
-        return (line && line == project.property("parsecRdlVersion"))
+        //Return upToDate when rdl_gen version matches
+        def flag = false
+        try {
+            def line = new File("${projectDir.absolutePath}/src/main/resources/rdl-gen/metadata.xml").readLines().get(0)
+            flag = (line && line == project.property("parsecRdlGeneratorVersion"))
+        } finally {
+            return flag
+        }
     }
 }
 

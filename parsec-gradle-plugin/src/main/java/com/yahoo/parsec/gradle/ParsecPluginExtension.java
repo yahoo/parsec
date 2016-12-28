@@ -51,6 +51,11 @@ public class ParsecPluginExtension {
     private boolean generateHandlerImpl = true;
 
     /**
+     * If set to true, the generated code will include client implementation
+     */
+    private boolean generateClient = true;
+
+    /**
      * If set to true, the generators will generate parsec error objects.
      */
     private boolean generateParsecError = false;
@@ -128,6 +133,14 @@ public class ParsecPluginExtension {
 
     public void setGenerateHandlerImpl(boolean generateHandlerImpl) {
         this.generateHandlerImpl = generateHandlerImpl;
+    }
+
+    public boolean isGenerateClient() {
+        return generateClient;
+    }
+
+    public void setGenerateClient(boolean generateClient) {
+        this.generateClient = generateClient;
     }
 
     public boolean isGenerateParsecError() {
