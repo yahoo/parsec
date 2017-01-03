@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author sho
@@ -46,10 +48,8 @@ public class ParsecInitTask extends AbstractParsecGradleTask {
                 fileUtils.writeResourceAsExecutable(inputStream, pathUtils.getRdlBinaryPath());
             }
 
-            // Extract Parsec rdl generators to ${buildDir}/bin
-            extractParsecRdlGenerator(rdlBinSuffix, "java-model");
-            extractParsecRdlGenerator(rdlBinSuffix, "java-server");
-            extractParsecRdlGenerator(rdlBinSuffix, "swagger");
+            extractParsecRdlGenerator(rdlBinSuffix,
+                    Arrays.asList("java-model", "java-server", "java-client", "swagger"));
 
             // Create ${baseDir}/parsec-bin
             fileUtils.checkAndCreateDirectory(pathUtils.getBinPath());
@@ -85,23 +85,22 @@ public class ParsecInitTask extends AbstractParsecGradleTask {
      * Extract Parsec Rdl Generator.
      *
      * @param rdlBinSuffix rdl bin suffix
-     * @param generator generator
+     * @param generators the generator list
      * @throws IOException IOException
      */
-    void extractParsecRdlGenerator(final String rdlBinSuffix, final String generator) throws IOException {
+    void extractParsecRdlGenerator(final String rdlBinSuffix, final List<String> generators) throws IOException {
         final File file = fileUtils.getFileFromResource("/rdl-gen/rdl-gen.zip");
-        String generatorBinary;
 
-        generatorBinary = PathUtils.RDL_GEN_PARSEC_PREFIX + generator;
-
-
-        try (
-            ZipFile zipFile = new ZipFile(file);
-            InputStream inputStream = zipFile.getInputStream(
-                zipFile.getEntry(generatorBinary + "-" + rdlBinSuffix)
-            )
-        ) {
-            fileUtils.writeResourceAsExecutable(inputStream, pathUtils.getBinPath() + "/" + generatorBinary);
+        for (String g: generators) {
+            String generatorBinary = PathUtils.RDL_GEN_PARSEC_PREFIX + g;
+            try (
+                    ZipFile zipFile = new ZipFile(file);
+                    InputStream inputStream = zipFile.getInputStream(
+                            zipFile.getEntry(generatorBinary + "-" + rdlBinSuffix)
+                    )
+            ) {
+                fileUtils.writeResourceAsExecutable(inputStream, pathUtils.getBinPath() + "/" + generatorBinary);
+            }
         }
     }
 }
