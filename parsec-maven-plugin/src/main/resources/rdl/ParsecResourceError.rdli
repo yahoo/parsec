@@ -1,0 +1,14 @@
+// Parsec error response entity object
+type ParsecError Struct {
+  // error code
+  int32 code;
+
+  // error message
+  String message;
+}
+
+// This error model is designed for following EC REST API Convention (yo/ecrest)
+type ParsecResourceError Struct {
+  // error object
+  ParsecError error;
+}

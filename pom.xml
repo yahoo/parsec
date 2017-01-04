@@ -38,8 +38,23 @@
     </scm>
 
     <modules>
+        <module>parsec-maven-plugin</module>
         <module>parsec-base-build</module>
+        <!--<module>parsec_maven_archetype</module>-->
+        <!--<module>parsec_test</module>-->
     </modules>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <configuration>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <build>
         <pluginManagement>
@@ -53,9 +68,6 @@
                             <reportPlugin>
                                 <groupId>org.apache.maven.plugins</groupId>
                                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                                <configuration>
-                                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                                </configuration>
                             </reportPlugin>
                         </reportPlugins>
                     </configuration>
