@@ -63,14 +63,6 @@
                     <artifactId>maven-site-plugin</artifactId>
                     <groupId>org.apache.maven.plugins</groupId>
                     <version>${maven-site-plugin.version}</version>
-                    <configuration>
-                        <reportPlugins>
-                            <reportPlugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-project-info-reports-plugin</artifactId>
-                            </reportPlugin>
-                        </reportPlugins>
-                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
