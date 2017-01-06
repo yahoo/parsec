@@ -16,11 +16,15 @@ abstract public class AbstractParsecGradleTask extends DefaultTask{
     FileUtils fileUtils;
     PathUtils pathUtils;
 
+    String name;
+    String description;
+    String group;
+
     AbstractParsecGradleTask(final String name, final String description){
         super();
-        this.setName(name);
-        this.setDescription(description);
-        this.setGroup("parsec");
+        this.name = name;
+        this.description = description;
+        this.group = "parsec";
         pluginExtension = getProject().getExtensions().findByType(ParsecPluginExtension.class);
         if(pluginExtension == null){
             getLogger().info("Project did not create an extension");

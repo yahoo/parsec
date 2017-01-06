@@ -13,9 +13,9 @@ import java.nio.file.NotDirectoryException
  */
 
 abstract class AbstractProjectTask extends DefaultTask {
-    private String name
-    private String description
-    private String group
+    String name
+    String description
+    String group
 
     AbstractProjectTask(final String name, final String description){
         this.name = name
