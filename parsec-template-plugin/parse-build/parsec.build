@@ -1,0 +1,164 @@
+buildscript{
+
+    //Load project properties
+    def props = new Properties()
+    props.load(new URL(buildscript.getSourceURI().toURL(), "./gradle.properties").openStream())
+    props.each { key, val ->
+        if(!project.hasProperty(key)){
+            project.ext.set(key, val)
+        }
+    }
+    //TODO: can add version resolution strategy
+
+    //Add in dependencies for parsec-gradle-plugin
+    repositories {
+
+        jcenter()
+        maven{
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    dependencies {
+        classpath group: 'com.yahoo.parsec'              , name: 'parsec-gradle-plugin'   , version: parsecGradleVersion
+        classpath group: 'org.kt3k.gradle.plugin'        , name: 'coveralls-gradle-plugin', version: coverallsVersion
+        classpath group: 'org.akhikhl.gretty'            , name: 'gretty'                 , version: grettyVersion
+    }
+}
+
+//Parsec Plugins
+apply plugin: 'com.yahoo.parsec.gradle-plugin'
+
+//Language Plugins
+apply plugin: 'java'
+
+//Integration Plugins
+apply plugin: 'maven'
+apply plugin: 'osgi'
+apply plugin: 'application'
+apply plugin: 'war'
+apply plugin: 'org.akhikhl.gretty'
+
+//Code Enhancement Plugins
+apply plugin: 'checkstyle'
+apply plugin: 'pmd'
+apply plugin: 'findbugs'
+apply plugin: 'jdepend'
+apply plugin: 'project-report'
+apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
+
+
+//Profile: No-Code-Check
+//if(project.properties['profile'] == 'no-code-check'){
+//    check.enabled = false
+//}
+//Profile: No-Parsec-Generate
+//if(project.properties['profile'] == 'no-parsec-generate'){
+//    tasks.getByName("parsec-init").enabled = false
+//    tasks.getByName("parsec-generate").enabled = false
+//}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+
+    //Parsec Supporting Libraries
+    compile group: 'com.yahoo.parsec'               , name: 'parsec-config'               , version: parsecLibrariesVersion
+    compile group: 'com.yahoo.parsec'               , name: 'parsec-validation'           , version: parsecLibrariesVersion
+    compile group: 'com.yahoo.parsec'               , name: 'parsec-logging'              , version: parsecLibrariesVersion
+    compile group: 'com.yahoo.parsec'               , name: 'parsec-constraint-validators', version: parsecLibrariesVersion
+    compile group: 'com.yahoo.parsec'               , name: 'parsec-clients'              , version: parsecLibrariesVersion
+
+    //External Libraries
+    compile group: 'org.apache.commons'             , name: 'commons-lang3'               , version: commonsLang3Version
+    compile group: 'javax.ws.rs'                    , name: 'javax.ws.rs-api'             , version: javaxWsRsVersion
+    compile group: 'org.codehaus.jackson'           , name: 'jackson-mapper-asl'          , version: jacksonMapperVersion
+
+    compile group: 'com.google.guava'               , name: 'guava'                       , version: guavaVersion
+    compile group: 'org.glassfish.jersey.core'      , name: 'jersey-common'               , version: jerseyVersion
+    compile group: 'org.glassfish.jersey.core'      , name: 'jersey-server'               , version: jerseyVersion
+    compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet'    , version: jerseyVersion
+    compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-jetty-http' , version: jerseyVersion
+    compile group: 'org.glassfish.jersey.media'     , name: 'jersey-media-moxy'           , version: jerseyVersion
+    compile group: 'org.eclipse.jetty'              , name: 'jetty-servlet'               , version: jettyVersion
+    compile group: 'org.slf4j'                      , name: 'slf4j-api'                   , version: slf4jVersion
+    providedCompile group: 'javax.servlet'          , name: 'servlet-api'                 , version: servletApiVersion
+
+    //Testing Libraries
+    testCompile group: 'org.spockframework'   , name: 'spock-core'       , version: spockVersion
+    testCompile(group: 'cglib'                , name: 'cglib'            , version: cglibVersion) {
+        exclude(module: 'asm-util')
+        exclude(module: 'asm')
+    }
+    testCompile group: 'org.ow2.asm'          , name: 'asm-all'          , version: asmAllVersion
+    testCompile group: 'org.objenesis'        , name: 'objenesis'        , version: objenesisVersion
+    testCompile(group: 'org.glassfish.jersey.test-framework.providers', name: 'jersey-test-framework-provider-jetty', version: jerseyVersion) {
+        exclude(module: 'javax.servlet-api')
+    }
+}
+
+findbugs{
+    ignoreFailures = true
+    effort = "max"
+    reportLevel = "high"
+    reportsDir = file("$project.buildDir/findbugsReports")
+    excludeFilter = file("$project.projectDir/config/findbugs/excludeFilter.xml")
+}
+
+def excludePatterns = ["**/parsec_generated/**/*", "**/generated/**/*"]
+def extraResourcePath = 'build/generated-resources/parsec'
+
+pmd {
+    ignoreFailures = true
+}
+
+tasks.withType(Pmd){
+    exclude excludePatterns
+}
+
+checkstyle {
+    ignoreFailures = true
+}
+
+tasks.withType(Checkstyle){
+    exclude excludePatterns
+}
+
+gretty {
+    extraResourceBase extraResourcePath
+    contextPath = parsecWebappRootPath
+}
+
+war {
+    from extraResourcePath
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+parsec {
+    swaggerRootPath = parsecWebappRootPath
+    generateHandlerImpl = true
+    useSmartMethodNames = false
+    handleUncaughtExceptions = parsecHandleUncaughtExceptions
+    generateParsecError = parsecGenerateParsecError
+}
+
+//if(project.properties["profile"]=='it'){
+//    tasks.withType(org.akhikhl.gretty.AppStartTask){
+//        interactive = false
+//    }
+//}
+
