@@ -11,5 +11,5 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: "com.yahoo.parsec.template-plugin"
+    apply plugin: com.yahoo.parsec.template.ParsecTemplatePlugin
 }
