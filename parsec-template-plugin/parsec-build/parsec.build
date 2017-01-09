@@ -27,7 +27,7 @@ buildscript{
 }
 
 //Parsec Plugins
-apply plugin: 'com.yahoo.parsec.gradle-plugin'
+apply plugin: com.yahoo.parsec.gradle.ParsecGradlePlugin
 
 //Language Plugins
 apply plugin: 'java'
@@ -37,7 +37,7 @@ apply plugin: 'maven'
 apply plugin: 'osgi'
 apply plugin: 'application'
 apply plugin: 'war'
-apply plugin: 'org.akhikhl.gretty'
+apply plugin: org.akhikhl.gretty.GrettyPlugin
 
 //Code Enhancement Plugins
 apply plugin: 'checkstyle'
@@ -46,7 +46,7 @@ apply plugin: 'findbugs'
 apply plugin: 'jdepend'
 apply plugin: 'project-report'
 apply plugin: 'jacoco'
-apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: org.kt3k.gradle.plugin.CoverallsPlugin
 
 
 //Profile: No-Code-Check
