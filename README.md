@@ -33,7 +33,7 @@ Parsec project without a build.gradle script.
 
 ```
 gradle.beforeProject { prj ->
-   prj.apply from: 'https://raw.githubusercontent.com/yahoo/parsec/parsec-template-plugin/master/installation/apply.groovy'
+   prj.apply from: 'https://raw.githubusercontent.com/yahoo/parsec/master/parsec-template-plugin/installation/apply.groovy'
 }
 
 ```
