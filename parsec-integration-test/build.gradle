@@ -60,12 +60,14 @@ task preTestBuild << {
     new File("${testDir.absolutePath}/build.gradle").write(template2.toString())
 
     //Create process
-    def command = ["sh", "./before_test_build.sh", testDir.absolutePath, projectDir.absolutePath]
+    def command = ["sh", projectDir.absolutePath + "/before_test_build.sh", testDir.absolutePath, projectDir.absolutePath]
     def process = new ProcessBuilder(command).directory(projectDir).redirectErrorStream(true).start()
     process.inputStream.eachLine {println it}
     process.waitForOrKill(120000) //Wait for 2 mins or kill process regardless
     if(process.exitValue() == 0){
         process.destroy() //Note that Jetty is still running at this point
+    } else {
+        throw new GradleException("Starting jetty fail")
     }
 }
 
