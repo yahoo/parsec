@@ -12,17 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 public class SampleHandlerImpl implements SampleHandler {
 
     @Override
-    public User getUser(ResourceContext context, Integer id) {
+    public User getUsersById(ResourceContext context, Integer id) {
         return new User().setName("dm4");
     }
 
     @Override
-    public String postUser(ResourceContext context, User user) {
+    public String postUsers(ResourceContext context, User user) {
         return "Hello " + user.getName() + "!\n";
     }
 
     @Override
-    public String putUser(ResourceContext context, Integer id, User user) {
+    public String putUsersById(ResourceContext context, Integer id, User user) {
         return "Yo " + user.getOccupation() + "!\n";
     }
 
