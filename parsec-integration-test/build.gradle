@@ -27,11 +27,10 @@ dependencies {
     testCompile            group: 'org.apache.commons'                       , name: 'commons-io'   , version: '1.3.2'
 }
 
+
 def testDir = new File("$projectDir/sandbox")
 
 task integrationTest(type: Test) {
-    name = "integrationTest"
-    description = "Run integration test on Parsec-core project"
     testClassesDir = sourceSets.integrationTest.output.classesDir
     classpath = sourceSets.integrationTest.runtimeClasspath
     systemProperty "parsec_test.testDir", "$testDir/parsec_sample_webapp"
@@ -48,14 +47,15 @@ task preTestBuild << {
 
     //Create template file for plugin
     def template_file = new File("${resourcePath}/build.gradle.tmpl")
-    def binding = ["baseBuildProjectDir": "${project(":parsec-base-build").projectDir.absolutePath}"
-                   , "parsecGradleVersion": "${project(":parsec-gradle-plugin").version}" ]
+    def binding = ["baseBuildProjectDir": "${project(":parsec-base-build").projectDir.absolutePath}",
+                   "parsecGradleVersion": "${project(":parsec-gradle-plugin").version}"]
     def template = engine.createTemplate(template_file).make(binding)
     new File("${testDir.absolutePath}/build.gradle.tmpl").write(template.toString())
 
     //Create build.gradle file
     def build_file = new File("${resourcePath}/build.gradle")
-    def binding2 = ["parsecTemplateVersion" : "${project(":parsec-template-plugin").version}"]
+    def binding2 = ["parsecTemplateVersion" : "${project(":parsec-template-plugin").version}",
+                    "grettyVersion": "${project.property("grettyVersion")}"]
     def template2 = engine.createTemplate(build_file).make(binding2)
     new File("${testDir.absolutePath}/build.gradle").write(template2.toString())
 
@@ -72,9 +72,7 @@ task preTestBuild << {
 task postTestBuild(type: Exec){
     workingDir = "${projectDir}/sandbox/parsec_sample_webapp"
     commandLine 'gradle', 'appStop', '-Pprofile=it'
-}
 
-postTestBuild << {
     if(project.properties['deleteSandbox']=='true'){
         testDir.deleteDir()
     }
@@ -86,6 +84,6 @@ tasks.withType(Test){
 
 preTestBuild.dependsOn parent.subprojects.install
 integrationTest.dependsOn preTestBuild
-integrationTest.mustRunAfter parent.subprojects.test
+//integrationTest.mustRunAfter parent.subprojects.test
 integrationTest.finalizedBy postTestBuild
 check.dependsOn integrationTest

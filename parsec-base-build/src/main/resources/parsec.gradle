@@ -17,19 +17,13 @@ buildscript{
             url "https://plugins.gradle.org/m2/"
         }
         jcenter()
-
-        if(project.properties["profile"] == 'it'){
-            mavenLocal()
-        }
+        mavenLocal()
     }
 
     dependencies {
-        //Temporary solution to accommodate for different classpath in local vs portal
-        if(project.properties["profile"] == 'it'){
-            classpath group: 'com.yahoo.parsec'              , name: 'parsec-gradle-plugin'   , version: parsecGradleVersion
-        }else{
-            classpath group: 'gradle.plugin.com.yahoo.parsec', name: 'parsec-gradle-plugin'   , version: parsecGradleVersion
-        }
+
+        classpath group: 'com.yahoo.parsec'              , name: 'parsec-gradle-plugin'   , version: parsecGradleVersion
+
         classpath group: 'org.kt3k.gradle.plugin'        , name: 'coveralls-gradle-plugin', version: coverallsVersion
         classpath group: 'org.akhikhl.gretty'            , name: 'gretty'                 , version: grettyVersion
     }
@@ -58,16 +52,6 @@ apply plugin: 'jacoco'
 apply plugin: org.kt3k.gradle.plugin.CoverallsPlugin
 
 
-//Profile: No-Code-Check
-if(project.properties['profile'] == 'no-code-check'){
-    check.enabled = false
-}
-//Profile: No-Parsec-Generate
-if(project.properties['profile'] == 'no-parsec-generate'){
-    tasks.getByName("parsec-init").enabled = false
-    tasks.getByName("parsec-generate").enabled = false
-}
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -76,11 +60,6 @@ repositories {
 
     mavenCentral()
     jcenter()
-
-    maven {
-        url parsecLibrariesTempUrl
-    }
-
 }
 
 dependencies {
@@ -171,7 +150,8 @@ parsec {
     generateParsecError = parsecGenerateParsecError
 }
 
-if(project.properties["profile"]=='it'){
+// to support automatic integration testing
+if(project.properties["profile"]=='it') {
     tasks.withType(org.akhikhl.gretty.AppStartTask){
         interactive = false
     }
