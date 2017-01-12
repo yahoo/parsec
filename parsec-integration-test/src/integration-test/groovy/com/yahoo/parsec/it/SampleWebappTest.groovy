@@ -1,8 +1,10 @@
 package com.yahoo.parsec.it
 
+import groovy.json.JsonSlurper
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient
+import org.apache.commons.io.IOUtils
 import org.junit.Test
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -162,26 +164,16 @@ class SampleWebappTest extends Specification {
         HttpResponseException exp = thrown()
         exp.statusCode == 400
 
-        //TODO: figure out what the actual error message is
-//        def actualResp = IOUtils.toString(exp.getResponse().data)
-//        def actualResp = IOUtils.toString((InputStream)exp.getResponse().getData())
-//        def expectedResp =
-//                ["error":
-//                         [
-//                                 "code":0,
-//                                 "message":"constraint violation validate error",
-//                                 "detail":[
-//                                         [
-//                                                 "type":"validationError",
-//                                                 "message":"may not be null","messageTemplate":"{javax.validation.constraints.NotNull.message}",
-//                                                 "path":"SampleResources.putUser.namedUser.occupation"
-//                                         ]
-//                                 ],
-//                         ]
-//                ]
-//        new JsonSlurper().setType(RELAX).parseText(actualResp) == expectedResp
-    }
+        String actualResp = IOUtils.toString(exp.getResponse().data)
+        def result = new JsonSlurper().parseText(actualResp)
 
+        def detail = result.error.detail[0]
+        result.error.code == 0
+        detail.type == "validationError"
+        detail.message == "may not be null"
+        detail.path == "SampleResources.putUsersById.namedUser.occupation"
+        detail.messageTemplate == "{javax.validation.constraints.NotNull.message}"
+    }
 
     @Test
     def "put to /api/sample/v1/users/001 without name and with occupation more than 4 chars should get code 200"(){

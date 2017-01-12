@@ -16,7 +16,7 @@ class ParsecTemplateExtension {
      */
     String baseBuildVersion = "1.0.13-pre"
 
-    private String BASE_BUILD_URL = "https://raw.githubusercontent.com/yahoo/parsec/master/parsec-template-plugin/parsec-build/parsec.build"
+    private String BASE_BUILD_URL = "https://raw.githubusercontent.com/yahoo/parsec/master/parsec-base-build/src/main/resources/parsec.gradle"
 
     /**
      * Extra elements to generate
