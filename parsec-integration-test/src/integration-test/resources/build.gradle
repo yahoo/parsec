@@ -13,7 +13,7 @@ buildscript {
     }
 }
 
-//apply plugin: com.yahoo.parsec.template.ParsecTemplatePlugin
+apply plugin: com.yahoo.parsec.template.ParsecTemplatePlugin
 apply plugin: org.akhikhl.gretty.GrettyPlugin
 parsecTemplate{
     extraTemplate {
