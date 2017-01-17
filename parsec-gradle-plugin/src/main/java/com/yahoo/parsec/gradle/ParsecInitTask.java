@@ -83,7 +83,7 @@ public class ParsecInitTask extends AbstractParsecGradleTask {
             fileUtils.writeResourceAsExecutable(inputStream, pathUtils.getRdlBinaryPath());
         } else {
             // the tgz file for linux
-            fileUtils.unTarZip("/rdl-bin/rdl.tgz", pathUtils.getRdlBinaryPath(), true);
+            fileUtils.unTarZip("/rdl-bin/rdl.tgz", pathUtils.getBinPath(), true);
             InputStream rdlStream = new FileInputStream(pathUtils.getRdlBinaryPath());
             if (rdlStream != null) {
                 fileUtils.writeResourceAsExecutable(rdlStream, pathUtils.getRdlBinaryPath());
