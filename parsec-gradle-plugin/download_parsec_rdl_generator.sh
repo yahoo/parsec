@@ -6,7 +6,7 @@ DESTINATION_DIR=$2
 METADATA_FILE=metadata.xml
 
 TMP_PATH=/tmp
-URL_PATH="https://github.com/yahoo/parsec-rdl-gen/releases/download/$PARSEC_RDL_GENERATOR_VERSION/rdl-gen.zip"
+URL_PATH="https://github.com/yahoo/parsec-rdl-gen/releases/download/v$PARSEC_RDL_GENERATOR_VERSION/rdl-gen.zip"
 
 echo "Fetching $URL_PATH version: $PARSEC_RDL_GENERATOR_VERSION"
 

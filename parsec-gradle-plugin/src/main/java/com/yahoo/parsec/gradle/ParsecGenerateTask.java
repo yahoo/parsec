@@ -88,13 +88,16 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                     List<String> options = new ArrayList<>();
                     options.add("-o");
                     options.add(pathUtils.getDocPath());
-//                    if (!pluginExtension.getSwaggerRootPath().isEmpty()) {
-//                        options.add("-xr");
-//                        options.add(pluginExtension.getSwaggerRootPath());
-//                    }
-//                    if (pluginExtension.isGenerateParsecError()) {
-//                        options.add("-xg");
-//                    }
+                    if (!pluginExtension.getSwaggerRootPath().isEmpty()) {
+                        options.add("-xb=" + pluginExtension.getSwaggerRootPath());
+                    }
+                    if (pluginExtension.isGenerateParsecError()) {
+                        options.add("-xe=true");
+                    }
+                    if (pluginExtension != null && !pluginExtension.getSwaggerSchema().isEmpty()) {
+                        options.add("-xc=" + pluginExtension.getSwaggerSchema());
+                    }
+
                     rdlGenerate(pathUtils.getRdlBinaryPath(), "parsec-swagger", file, options);
                 }
 
@@ -120,15 +123,15 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                     List<String> options = new ArrayList<>();
                     options.add("-o");
                     options.add(pathUtils.getGeneratedSourcesPath());
-//                    if (pluginExtension.isGenerateHandlerImpl()) {
-//                        options.add("-xi");
-//                    }
-//                    if (pluginExtension.isUseSmartMethodNames()) {
-//                        options.add("-xp");
-//                    }
-//                    if (pluginExtension.isGenerateParsecError()) {
-//                        options.add("-xg");
-//                    }
+                    if (pluginExtension.isGenerateHandlerImpl()) {
+                        options.add("-xi=true");
+                    }
+                    if (pluginExtension.isUseSmartMethodNames()) {
+                        options.add("-xp=true");
+                    }
+                    if (pluginExtension.isGenerateParsecError()) {
+                        options.add("-xe=true");
+                    }
                     rdlGenerate(
                         pathUtils.getRdlBinaryPath(),
                         "parsec-java-server",
