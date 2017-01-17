@@ -14,10 +14,11 @@ The goal of Parsec is to:
 * Minimize time and effort spent on common repetitive tasks
 * Provide helper [libraries and utilities](https://github.com/yahoo/parsec-libraries) for common tasks
 * Reduce the learning curve and maintenance cost
+* Provide client for your web service
 
 If you are building a new project with Java, Parsec is definitely a good starting point.
 
-##Getting Started
+## Getting Started
 
 ### Requirements
 
@@ -60,8 +61,10 @@ name sample;
 version 1;
 
 type User struct {
-    string name (x_size="min=3,max=5");
+    string name (x_not_null="groups=insert", x_size="min=3,max=5,groups=update|insert");
+    string occupation (x_not_null="groups=update", x_size="min=4,groups=update|insert");
     int32 age;
+    string id (x_null="groups=insert");
 }
 
 resource User GET "/users/{id}" {
@@ -77,7 +80,7 @@ resource User GET "/users/{id}" {
 }
 
 resource string POST "/users" {
-    User user (x_must_validate);
+    User user (x_must_validate="insert");
 
     expected OK;
     exceptions {
@@ -86,6 +89,21 @@ resource string POST "/users" {
         ResourceError UNAUTHORIZED;
         ResourceError FORBIDDEN;
     }
+}
+
+resource string PUT "/users/{id}" {
+    int32 id ;
+
+    User user (x_must_validate="update");
+
+    expected OK;
+    exceptions {
+        ResourceError INTERNAL_SERVER_ERROR;
+        ResourceError BAD_REQUEST;
+        ResourceError UNAUTHORIZED;
+        ResourceError FORBIDDEN;
+    }
+
 }
 ```
 
@@ -104,10 +122,15 @@ build/generated-sources/
     └── your
         └──group
             └──name
-                └── parsec_generated
+                └──parsec_generated
                     ├── ParsecApplication.java
-                    ├── ParsecWrapperServlet.java
+                    ├── ParsecErrorBody.java
+                    ├── ParsecErrorDetail.java
+                    ├── ParsecExceptionMapper.java
+                    ├── ParsecResourceError.java
+                    ├── ParsecValidationGroups.java
                     ├── ParsecWebListener.java
+                    ├── ParsecWrapperServlet.java
                     ├── ResourceContext.java
                     ├── ResourceError.java
                     ├── ResourceException.java
@@ -116,7 +139,7 @@ build/generated-sources/
                     ├── SampleServer.java
                     └── User.java
 
-4 directories, 10 files
+4 directories, 15 files
 
 $ tree src/main/java/
 src/main/java/
@@ -124,18 +147,22 @@ src/main/java/
     └── group
         └──name
             ├── DefaultApplication.java
+            ├── DefaultExceptionMapper.java
             ├── DefaultResourceContext.java
             ├── DefaultWebListener.java
+            ├── SampleClient.java
+            ├── SampleClientImpl.java
             └── SampleHandlerImpl.java
 
-2 directories, 4 files
+2 directories, 7 files
 ```
 
-Parsec generated Java server and model code. The generated code would include:
+Parsec generated Java server, model code, and Java client for the server. The generated code would include:
 
 + Java models / data objects, for example: User.java
 + Jersey resource endpoints, for example: SampleResource.java
 + Handler interfaces, for example: SampleHandler.java - Handler implementations follow a naming convention: <API name>HandlerImpl.java
++ Java client for your web service, for example: SampleClient.java, SampleClientImpl.java
 
 Java files are generated under ${baseDir}/build/generated-sources/java and the generated Java code are in sub-package <user defined namespace>.parsec_generated
 
@@ -153,18 +180,26 @@ import your.group.name.parsec_generated.ResourceContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * SampleHandlerImpl is interface implementation that implement SampleHandler interface.
+ */
 public class SampleHandlerImpl implements SampleHandler {
 
     @Override
-    public User getUser(ResourceContext context, Integer id) {
+    public User getUsersById(ResourceContext context, Integer id) {
         User user = new User();
         user.setName("user");
         return user;
     }
 
     @Override
-    public String postUser(ResourceContext context, User user) {
-        return "Welcome to Parsec, " + user.getName() + "!\n";
+    public String postUsers(ResourceContext context, User user) {
+        return "Post to user " + user.getName() + "!\n";
+    }
+
+    @Override
+    public String putUsersById(ResourceContext context, Integer id, User user) {
+        return "put to user " + user.getName() + " by id " + id + "!\n";
     }
 
     @Override
@@ -194,6 +229,28 @@ $ curl -H 'Content-Type: application/json' -d '{"name":"user","age":10}' http://
 Welcome to Parsec, user!
 ```
 
-##License
+### Use generated java client
+
+Parsec friendly generates a simple client for your web service, including the interface and the implementation.
+Client implementation is base on com.ning.http.client.AsyncHttpClient, you can directly use it or modify it by your needs.
+
+Here is the example of SampleClient.java, which provides methods to the APIs defined in src/main/rdl/sample.rdl.
+
+```
+package your.group.name;
+
+import java.util.concurrent.CompletableFuture;
+import your.group.name.parsec_generated.ResourceException;
+import your.group.name.parsec_generated.User;
+
+
+public interface SampleClient {
+    CompletableFuture<User> getUser(int id) throws ResourceException;
+    CompletableFuture<String> postUser(User user) throws ResourceException;
+    CompletableFuture<String> putUser(int id, User user) throws ResourceException;
+}
+```
+
+## License
 
 Copyright 2016, Yahoo Inc. Copyrights licensed under the Apache 2.0 License. See the accompanying LICENSE file for terms.
