@@ -9,12 +9,10 @@ to apply the plugin:
 ```
 buildscript{
     repositories{
-        maven{
-            url "https://plugins.gradle.org/m2/"
-        }
+        jcenter()
     }
     dependencies{
-        classpath group: 'gradle.plugin.com.yahoo.parsec'  , name: 'gradle-plugin'   , version : '1.0.13-pre'
+        classpath group: 'com.yahoo.parsec'  , name: 'parsec-gradle-plugin'   , version : '0.0.14-pre'
     }
 }
 ```
