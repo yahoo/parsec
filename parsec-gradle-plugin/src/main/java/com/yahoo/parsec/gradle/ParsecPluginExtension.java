@@ -20,9 +20,14 @@ public class ParsecPluginExtension {
     private String sourceFiles = "*.rdl";
 
     /**
-     * If not empty, the value will be put in frontend of the generated swagger schema's endpoint
+     * If not empty, the value will be put in frontend of the generated swagger schema's endpoint.
      */
     private String swaggerRootPath = "";
+
+    /**
+     * If not empty, the value will overwrite swagger endpoint scheme.
+     */
+    private String swaggerSchema = "";
 
     /**
      * If set to true (the default), the generated code will include model classes for the RDL types.
@@ -93,6 +98,14 @@ public class ParsecPluginExtension {
 
     public void setSwaggerRootPath(String swaggerRootPath) {
         this.swaggerRootPath = swaggerRootPath;
+    }
+
+    public String getSwaggerSchema() {
+        return swaggerSchema;
+    }
+
+    public void setSwaggerSchema(String schema) {
+        this.swaggerSchema = schema;
     }
 
     public boolean isGenerateModel() {

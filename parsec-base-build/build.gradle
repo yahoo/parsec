@@ -7,7 +7,7 @@ buildscript{
     }
 
     dependencies{
-        classpath group: 'com.jfrog.bintray.gradle' , name: 'gradle-bintray-plugin', version: '1.7.3'
+        classpath group: 'com.jfrog.bintray.gradle' , name: 'gradle-bintray-plugin', version: project.property('packageVersion.gradle-bintray-plugin')
     }
 }
 

@@ -6,8 +6,8 @@ buildscript{
         jcenter()
     }
     dependencies{
-        classpath group: 'com.gradle.publish'                  , name: 'plugin-publish-plugin'  , version: '0.9.4'
-        classpath group: 'com.jfrog.bintray.gradle'            , name: 'gradle-bintray-plugin'  , version: '1.6'
+        classpath group: 'com.gradle.publish', name: 'plugin-publish-plugin', version: rootProject.property('packageVersion.plugin-publish-plugin')
+        classpath group: 'com.jfrog.bintray.gradle', name: 'gradle-bintray-plugin', version: rootProject.property('packageVersion.gradle-bintray-plugin')
     }
 }
 
@@ -21,47 +21,36 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.codehaus.groovy'                     , name: 'groovy-all'      , version: '2.4.4'
-    compile group: 'gradle-templates'                        , name: 'gradle-templates', version: '1.4.1'
-    compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder'    , version: '0.7'
+    compile group: 'org.codehaus.groovy'                     , name: 'groovy-all'      , version: rootProject.property('packageVersion.groovy-all')
+    compile group: 'gradle-templates'                        , name: 'gradle-templates', version: rootProject.property('packageVersion.gradle-templates')
+    compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder'    , version: rootProject.property('packageVersion.http-builder')
     compile gradleApi()
 }
 
 //For plugin-publish plugin
-pluginBundle {
-    website = 'http://www.gradle.org/' //TODO: Replace with github link
-    vcsUrl = 'https://github.com/gradle/gradle' //TODO: Replace with github link
-    description = 'Parsec extension of gradle-templates'
-    tags = ['templates', 'parsec']
-    plugins {
-         parsecTemplatesPlugin {
-            id = 'com.yahoo.parsec.template-plugin'
-            displayName = 'Parsec Template Plugin'
-         }
-    }
-}
+//pluginBundle {
+//    website = 'http://www.gradle.org/' //TODO: Replace with github link
+//    vcsUrl = 'https://github.com/gradle/gradle' //TODO: Replace with github link
+//    description = 'Parsec extension of gradle-templates'
+//    tags = ['templates', 'parsec']
+//    plugins {
+//         parsecTemplatesPlugin {
+//            id = 'com.yahoo.parsec.template-plugin'
+//            displayName = 'Parsec Template Plugin'
+//         }
+//    }
+//}
 
-tasks.getByName('release').outputs.upToDateWhen {
-    parsecTemplatePluginVersion.toString() > releasedVersion.toString()
-}
-
-preProcess << {
-    def releaseVersion = project.property("release.version")
-    def templatePluginExtensionFile = new File("$projectDir/src/main/groovy/com/yahoo/parsec/template/ParsecTemplateExtension.groovy")
-    def templatePluginReadme = new File("$projectDir/README.md")
-    ant.replaceregexp(file: templatePluginReadme, match: "com/yahoo/parsec/parsec-base-build/\\S+/parsec.gradle", replace: "com/yahoo/parsec/parsec-base-build/${releaseVersion}/parsec.gradle")
-    ant.replaceregexp(file: templatePluginExtensionFile, match: "baseBuildVersion =\\s*\"\\S+\"", replace: "baseBuildVersion = \"${releaseVersion}\"")
-}
-
-publishPlugins.mustRunAfter check
-postProcess.dependsOn publishPlugins
-postProcess << {
+// replace the installation version
+task updateInstallVersion()  {
     def apply_file = new File('installation', 'apply.groovy')
-    def releaseVersion = project.property("release.version")
-    def parentProperties = new File("${parent.projectDir}/gradle.properties")
-    ant.replaceregexp(file: apply_file, match: "version: '\\S+'", replace: "version: '${releaseVersion}'")
-    ant.replaceregexp(file: parentProperties, match: "parsecTemplatePluginVersion\\s*=\\s*\\S+", replace: "parsecTemplatePluginVersion = ${releaseVersion}")
+    def releaseVersion = rootProject.property("version")
+
+    ant.replaceregexp(file: apply_file, match: "\"com.yahoo.parsec:parsec-template-plugin:\\S+\"",
+              replace: "\"com.yahoo.parsec:parsec-template-plugin:${releaseVersion}\"" )
+
 }
 
-
-
+//publishPlugins.mustRunAfter check
+//postProcess.dependsOn publishPlugins
+build.finalizedBy updateInstallVersion

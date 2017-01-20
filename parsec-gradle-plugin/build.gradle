@@ -6,7 +6,7 @@ buildscript{
         jcenter()
     }
     dependencies{
-        classpath group: 'com.gradle.publish', name: 'plugin-publish-plugin', version: '0.9.4'
+        classpath group: 'com.gradle.publish', name: 'plugin-publish-plugin', version: project.property('packageVersion.plugin-publish-plugin')
     }
 }
 
@@ -23,8 +23,8 @@ repositories {
 
 dependencies {
     compile gradleApi()
-    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.9'
-    compile group: 'commons-codec'     , name: 'commons-codec'   , version: '1.10'
+    compile group: 'org.apache.commons', name: 'commons-compress', version: project.property('packageVersion.commons-compress')
+    compile group: 'commons-codec'     , name: 'commons-codec'   , version: project.property('packageVersion.commons-codec')
 }
 
 pluginBundle {
@@ -44,21 +44,15 @@ tasks.getByName('release').outputs.upToDateWhen {
     parsecGradlePluginVersion.toString() > releasedVersion.toString()
 }
 
-postProcess << {
+task updateInstallationVersion << {
     def readme = new File("${projectDir}/README.md")
-    def releaseVersion = project.property("release.version")
-    def parentProperties = new File("${parent.projectDir}/gradle.properties")
+    def releaseVersion = rootProject.property("version")
     ant.replaceregexp(file: readme, match: "version : '\\S+'", replace: "version : '${releaseVersion}'")
-    ant.replaceregexp(file: parentProperties, match: "parsecGradlePluginVersion\\s*=\\s*\\S+", replace: "parsecGradlePluginVersion = ${releaseVersion}")
+//    ant.replaceregexp(file: parentProperties, match: "parsecGradlePluginVersion\\s*=\\s*\\S+", replace: "parsecGradlePluginVersion = ${releaseVersion}")
 }
 
-task downloadParsecRdl(type: Exec) {
-//    commandLine "sh", "./download_parsec_rdl.sh", project.property("parsecRdlVersion"), projectDir.absolutePath
-//    outputs.upToDateWhen {
-//        //Return upToDate when parsec_rdl version matches
-//        def line = new File("${projectDir.absolutePath}/src/main/resources/rdl-bin/metadata.xml").readLines().get(0)
-//        return (line && line == project.property("parsecRdlVersion"))
-//    }
+task downloadParsecRdlGenerator(type: Exec) {
+
     commandLine "sh", "./download_parsec_rdl_generator.sh", project.property("parsecRdlGeneratorVersion"), projectDir.absolutePath
     outputs.upToDateWhen {
         //Return upToDate when rdl_gen version matches
@@ -72,8 +66,29 @@ task downloadParsecRdl(type: Exec) {
     }
 }
 
-jar.dependsOn downloadParsecRdl
-publishPlugins.dependsOn downloadParsecRdl
-publishPlugins.mustRunAfter check
-postProcess.dependsOn publishPlugins
-test.dependsOn downloadParsecRdl
+task downloadRdlBinary(type: Exec) {
+    def osName = System.getProperty("os.name").equals("Mac OS X") ? "darwin" : "linux";
+    commandLine "sh", "./download_parsec_rdl.sh", project.property("parsecRdlVersion"), projectDir.absolutePath, osName
+    outputs.upToDateWhen {
+
+        //Return upToDate when parsec_rdl version matches
+        def flag = false
+        try {
+            def line = new File("${projectDir.absolutePath}/src/main/resources/rdl-bin/metadata.xml").readLines().get(0)
+            flag = (line && line == project.property("parsecRdlVersion"))
+        } finally {
+            return flag
+        }
+    }
+
+}
+
+//jar.dependsOn downloadParsecRdl
+jar.dependsOn downloadRdlBinary
+jar.dependsOn downloadParsecRdlGenerator
+//publishPlugins.dependsOn downloadParsecRdl
+//publishPlugins.mustRunAfter check
+//postProcess.dependsOn publishPlugins
+test.dependsOn downloadParsecRdlGenerator
+test.dependsOn downloadRdlBinary
+build.finalizedBy updateInstallationVersion

@@ -1,20 +1,24 @@
 #!/usr/bin/env bash
 
-PARSEC_RDL_VERSION=$1
+PARSEC_RDL_VERSION="$1"
 DESTINATION_DIR=$2
+OS_NAME=$3
 
 METADATA_FILE=metadata.xml
+BASE_PATH="https://github.com/ardielle/ardielle-tools/releases/download"
+DESTINATION_PATH="$DESTINATION_DIR/src/main/resources/rdl-bin"
 
-BINTRAY_HOST="https://dl.bintray.com/wayne-wu"
-BINTRAY_REPO="gradle"
-BINTRAY_PATH="com/yahoo/parsec/rdl_bin"
-DESTINATION_PATH=$DESTINATION_DIR/src/main/resources/rdl-bin
-TMP_PATH=/tmp
-DIST_FILE=parsec_rdl.zip
+if [ "$OS_NAME" == "darwin" ]; then
+    DOWNLOAD_FILE="rdl-$PARSEC_RDL_VERSION-darwin.zip"
+    DIST_FILE="rdl.zip"
+else
+    DOWNLOAD_FILE="rdl-$PARSEC_RDL_VERSION-linux.tgz"
+    DIST_FILE="rdl.tgz"
+fi
 
-echo "Fetching $DIST_FILE version: $PARSEC_RDL_VERSION"
+URL_PATH="$BASE_PATH/v$PARSEC_RDL_VERSION/$DOWNLOAD_FILE"
 
-URL_PATH="$BINTRAY_HOST/$BINTRAY_REPO/$BINTRAY_PATH/$PARSEC_RDL_VERSION/$DIST_FILE"
+echo "Fetching $DOWNLOAD_FILE version: $PARSEC_RDL_VERSION"
 
 HTTP_RESPONSE_CODE=`curl -w "%{http_code}" -L "$URL_PATH" -o $DESTINATION_PATH/$DIST_FILE`
 if [ "$HTTP_RESPONSE_CODE" -ne 200 ]; then

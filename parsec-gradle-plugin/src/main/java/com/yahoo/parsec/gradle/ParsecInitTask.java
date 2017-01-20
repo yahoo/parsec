@@ -9,6 +9,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.TaskExecutionException;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -37,17 +38,10 @@ public class ParsecInitTask extends AbstractParsecGradleTask {
             fileUtils.checkAndCreateDirectory(pathUtils.getBinPath());
             String rdlBinSuffix = System.getProperty("os.name").equals("Mac OS X") ? "darwin" : "linux";
 
-            // Extract rdl to ${buildDir}/bin
-            File file = fileUtils.getFileFromResource("/rdl-bin/rdl-bin.zip");
-            try (
-                ZipFile zipFile = new ZipFile(file);
-                InputStream inputStream = zipFile.getInputStream(
-                    zipFile.getEntry(PathUtils.RDL_BINARY + "-" + rdlBinSuffix)
-                )
-            ) {
-                fileUtils.writeResourceAsExecutable(inputStream, pathUtils.getRdlBinaryPath());
-            }
+            // Extract rdl parser to ${buildDir}/bin
+            extractRdlBinary(rdlBinSuffix);
 
+            // Extract generator
             extractParsecRdlGenerator(rdlBinSuffix,
                     Arrays.asList("java-model", "java-server", "java-client", "swagger"));
 
@@ -78,6 +72,22 @@ public class ParsecInitTask extends AbstractParsecGradleTask {
             }
         } catch (IOException e) {
             throw new TaskExecutionException(this, e);
+        }
+    }
+
+    void extractRdlBinary(final String rdlBinSuffix) throws IOException {
+        if (rdlBinSuffix.equals("darwin")) {
+            File file = fileUtils.getFileFromResource("/rdl-bin/rdl.zip");
+            ZipFile zipFile = new ZipFile(file);
+            InputStream inputStream = zipFile.getInputStream(zipFile.getEntry(PathUtils.RDL_BINARY));
+            fileUtils.writeResourceAsExecutable(inputStream, pathUtils.getRdlBinaryPath());
+        } else {
+            // the tgz file for linux
+            fileUtils.unTarZip("/rdl-bin/rdl.tgz", pathUtils.getBinPath(), true);
+            InputStream rdlStream = new FileInputStream(pathUtils.getRdlBinaryPath());
+            if (rdlStream != null) {
+                fileUtils.writeResourceAsExecutable(rdlStream, pathUtils.getRdlBinaryPath());
+            }
         }
     }
 
