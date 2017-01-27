@@ -129,7 +129,7 @@ tasks.withType(Checkstyle){
 gretty {
     extraResourceBase extraResourcePath
     contextPath = parsecWebappRootPath
-    jvmArgs = ['-Xmx512m']
+    jvmArgs = ['-Xmx2048m']
 }
 
 war {
