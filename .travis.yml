@@ -17,7 +17,7 @@ script:
 - mkdocs build
 - git config --global user.email "builds@travis-ci.com"
 - git config --global user.name "Travis CI"
-- if [ "${TRAVIS_PULL_REQUEST}" == "false" ];then git remote add gh-token "https://$GITHUBKEY@github.com/yahoo/parsec";mkdocs gh-deploy --clean --remote-name gh-token;fi
+- if [ "${TRAVIS_PULL_REQUEST}" == "false" ];then git remote add gh-token "https://$GITHUBKEY@github.com/yahoo/parsec";git fetch gh-token && git fetch gh-token gh-pages:gh-pages;mkdocs gh-deploy --clean --remote-name gh-token;fi
 after_success:
 - ./gradlew coveralls
 env:
