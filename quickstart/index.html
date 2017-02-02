@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Getting Started - Parsec Development Document</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+	
+	<script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="..">Parsec Development Document</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">User Guide <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            
+<li class="active">
+    <a href="./">Getting Started</a>
+</li>
+                            
+<li >
+    <a href="../main/">Main Components</a>
+</li>
+                            
+<li >
+    <a href="../util/">Supporting Libraries and Utilities</a>
+</li>
+                            
+<li >
+    <a href="../testing/">Testing</a>
+</li>
+                            
+<li >
+    <a href="../endpoint/">API Endpoint Definition</a>
+</li>
+                            
+<li >
+    <a href="../faq/">Frequently Asked Questions</a>
+</li>
+                            
+<li >
+    <a href="../todo/">Todo</a>
+</li>
+                            
+<li >
+    <a href="../reference/">Reference</a>
+</li>
+                        </ul>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="..">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../main/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/yahoo/parsec">
+                                <i class="fa fa-github"></i>GitHub
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#getting-started">Getting Started</a></li>
+            <li><a href="#requirements">Requirements</a></li>
+            <li><a href="#create-a-new-project">Create a New Project</a></li>
+            <li><a href="#create-schema">Create Schema</a></li>
+            <li><a href="#generate-code">Generate Code</a></li>
+            <li><a href="#implement-handlers">Implement Handlers</a></li>
+            <li><a href="#start-your-server">Start your Server</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h2 id="getting-started">Getting Started</h2>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li><strong>Java 1.8</strong>: check your jdk version using <code>$ java -version</code> or <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">download Java JDK 1.8</a></li>
+<li><strong>Gradle (recommended version: &gt;2.4)</strong>: check your gradle version using <code>$ gradle --v</code> or run</li>
+</ul>
+<p><code>$ sudo brew install gradle</code> to install the latest gradle</p>
+<p>After having Java 1.8 and Gradle installed with the proper version, you must do a one time setup to allow you to create a
+Parsec project without a build.gradle script.</p>
+<p><code>$ vim ~/.gradle/init.gradle</code>, then enter the following code:</p>
+<pre><code>gradle.beforeProject { prj -&gt;
+   prj.apply from: 'https://raw.githubusercontent.com/yahoo/parsec/master/parsec-template-plugin/installation/apply.groovy'
+}
+
+</code></pre>
+
+<h3 id="create-a-new-project">Create a New Project</h3>
+<p>To create a new Parsec project, run:</p>
+<p><code>$ gradle createParsecProject -PgroupId='your.group.name' -PartifactId='your_project_name'</code></p>
+<p><strong>groupId</strong> refers to the namespace of your package, while the <strong>artifactId</strong> is your project name.
+If you do not specify the groupId or artifactId, you will be prompted to do so.</p>
+<h3 id="create-schema">Create Schema</h3>
+<p>You need one or more RDL schema files to define your API specifications; they should be placed under src/main/rdl/ and be named as *.rdl.
+RDL is a machine-readable description of a schema that describes data types, as well as resources using those types.</p>
+<p>You can start with this sample RDL file, save it as src/main/rdl/sample.rdl:</p>
+<pre><code>namespace your.group.name;
+name sample;
+version 1;
+
+type User struct {
+    string name (x_not_null=&quot;groups=insert&quot;, x_size=&quot;min=3,max=5,groups=update|insert&quot;);
+    string occupation (x_not_null=&quot;groups=update&quot;, x_size=&quot;min=4,groups=update|insert&quot;);
+    int32 age;
+    string id (x_null=&quot;groups=insert&quot;);
+}
+
+resource User GET &quot;/users/{id}&quot; {
+    int32 id;
+
+    expected OK;
+    exceptions {
+        ResourceError INTERNAL_SERVER_ERROR;
+        ResourceError BAD_REQUEST;
+        ResourceError UNAUTHORIZED;
+        ResourceError FORBIDDEN;
+    }
+}
+
+resource string POST &quot;/users&quot; {
+    User user (x_must_validate=&quot;insert&quot;);
+
+    expected OK;
+    exceptions {
+        ResourceError INTERNAL_SERVER_ERROR;
+        ResourceError BAD_REQUEST;
+        ResourceError UNAUTHORIZED;
+        ResourceError FORBIDDEN;
+    }
+}
+
+resource string PUT &quot;/users/{id}&quot; {
+    int32 id ;
+
+    User user (x_must_validate=&quot;update&quot;);
+
+    expected OK;
+    exceptions {
+        ResourceError INTERNAL_SERVER_ERROR;
+        ResourceError BAD_REQUEST;
+        ResourceError UNAUTHORIZED;
+        ResourceError FORBIDDEN;
+    }
+
+}
+</code></pre>
+
+<h3 id="generate-code">Generate Code</h3>
+<p>After you have added your rdl files in the folder, you can use the command below to generate files:</p>
+<p><code>$ gradle parsec-generate</code></p>
+<p>Here is an example of the generated folder structure, based on the sample.rdl above:</p>
+<pre><code>$ tree build/generated-sources/
+build/generated-sources/
+└── java
+    └── your
+        └──group
+            └──name
+                └──parsec_generated
+                    ├── ParsecApplication.java
+                    ├── ParsecErrorBody.java
+                    ├── ParsecErrorDetail.java
+                    ├── ParsecExceptionMapper.java
+                    ├── ParsecResourceError.java
+                    ├── ParsecValidationGroups.java
+                    ├── ParsecWebListener.java
+                    ├── ParsecWrapperServlet.java
+                    ├── ResourceContext.java
+                    ├── ResourceError.java
+                    ├── ResourceException.java
+                    ├── SampleHandler.java
+                    ├── SampleResources.java
+                    ├── SampleServer.java
+                    └── User.java
+
+4 directories, 15 files
+
+$ tree src/main/java/
+src/main/java/
+└── your
+    └── group
+        └──name
+            ├── DefaultApplication.java
+            ├── DefaultExceptionMapper.java
+            ├── DefaultResourceContext.java
+            ├── DefaultWebListener.java
+            ├── SampleClient.java
+            ├── SampleClientImpl.java
+            └── SampleHandlerImpl.java
+
+2 directories, 7 files
+</code></pre>
+
+<p>Parsec generated Java server, model code, and Java client for the server. The generated code would include:</p>
+<ul>
+<li>Java models / data objects, for example: User.java</li>
+<li>Jersey resource endpoints, for example: SampleResource.java</li>
+<li>Handler interfaces, for example: SampleHandler.java - Handler implementations follow a naming convention: <API name>HandlerImpl.java</li>
+<li>Java client for your web service, for example: SampleClient.java, SampleClientImpl.java</li>
+</ul>
+<p>Java files are generated under ${baseDir}/build/generated-sources/java and the generated Java code are in sub-package <user defined namespace>.parsec_generated</p>
+<h3 id="implement-handlers">Implement Handlers</h3>
+<p>Now you can start to implement your API by editing *HandlerImpl.java files. Here is an example of SampleHandlerImpl.java:</p>
+<pre><code>package your.group.name;
+
+import your.group.name.parsec_generated.User;
+import your.group.name.parsec_generated.SampleHandler;
+import your.group.name.parsec_generated.ResourceContext;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * SampleHandlerImpl is interface implementation that implement SampleHandler interface.
+ */
+public class SampleHandlerImpl implements SampleHandler {
+
+    @Override
+    public User getUsersById(ResourceContext context, Integer id) {
+        User user = new User();
+        user.setName(&quot;user&quot;);
+        return user;
+    }
+
+    @Override
+    public String postUsers(ResourceContext context, User user) {
+        return &quot;Post to user &quot; + user.getName() + &quot;!\n&quot;;
+    }
+
+    @Override
+    public String putUsersById(ResourceContext context, Integer id, User user) {
+        return &quot;put to user &quot; + user.getName() + &quot; by id &quot; + id + &quot;!\n&quot;;
+    }
+
+    @Override
+    public ResourceContext newResourceContext(HttpServletRequest request, HttpServletResponse response) {
+        return new DefaultResourceContext(request, response);
+    }
+}
+</code></pre>
+
+<h3 id="start-your-server">Start your Server</h3>
+<p>Now you can start your server with:</p>
+<p><code>$ gradle jettyRun</code></p>
+<p>Check out your <a href="http://localhost:8080/api/static/swagger-ui/">Swagger dashboard</a></p>
+<p>Now you can run test with:</p>
+<pre><code>$ curl http://localhost:8080/api/sample/v1/users/1
+
+{&quot;age&quot;:0,&quot;name&quot;:&quot;user&quot;}
+
+$ curl -H 'Content-Type: application/json' -d '{&quot;name&quot;:&quot;user&quot;,&quot;age&quot;:10}' http://localhost:8080/api/sample/v1/users
+
+Welcome to Parsec, user!
+</code></pre></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+                <p>Copyright &copy; 2017 <a href="http://www.yahoo.com">Yahoo! Inc.</a></p>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script><div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
