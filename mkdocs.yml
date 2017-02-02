@@ -1,0 +1,14 @@
+site_name: Parsec Development Document
+repo_url: https://github.com/yahoo/parsec
+copyright: Copyright &copy; 2017 <a href="http://www.yahoo.com">Yahoo! Inc.</a>
+pages:
+    - 'Home': index.md
+    - 'User Guide':
+       - 'Getting Started': quickstart.md
+       - 'Main Components': main.md
+       - 'Supporting Libraries and Utilities': util.md
+       - 'Testing': testing.md
+       - 'API Endpoint Definition': endpoint.md
+       - 'Frequently Asked Questions': faq.md
+       - 'Todo': todo.md
+       - 'Reference': reference.md
