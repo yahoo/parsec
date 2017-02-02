@@ -75,7 +75,7 @@ task preTestBuild << {
 
 task postTestBuild(type: Exec){
     workingDir = "${projectDir}/sandbox/parsec_sample_webapp"
-    commandLine 'gradle', 'appStop', '-Pprofile=it'
+    commandLine 'gradle', 'appAfterIntegrationTest', '-Pprofile=it'
 
     if(project.properties['deleteSandbox']=='true'){
         testDir.deleteDir()

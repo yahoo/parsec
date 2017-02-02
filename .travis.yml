@@ -7,15 +7,22 @@ before_cache:
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 before_install:
 - sudo apt-get install net-tools
+- sudo apt-get install python-pip
+- sudo pip install mkdocs
 cache:
   directories:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
 script:
 - test "${TRAVIS_PULL_REQUEST}" == "true" || test "${TRAVIS_BRANCH}" != "master" || ./gradlew bintrayUpload
+- mkdocs build
 after_success:
 - ./gradlew coveralls
+- if ["${TRAVIS_PULL_REQUEST}" == "false"];then mkdocs gh-deploy;fi
 env:
   global:
   - secure: t/YmohP7hMuyGl6DcuRgPwUpm673SNKeFDegnEhikAK3155uMjQkbwqcbqzM6KTco0TVOVvoCDEp7C8DuJit8IYNgfXZdCo4nFS+XzzG8OtIy7RBRSWlwn/VaypTaqq6TFO+0Lvmo6oIyaT14D5M1eFwxpNie7Pjn9ycvZdMMcK/aUfTgRjvNiyFhZIT178JmzjdfpXsuTCp0eeK9mi/sQvT6zITIuyR9N61nvvcJiNENRidojH8jO8T1gL9QwcUrlJO95JuZ4o2uzFmlRxnPQj0qNJc9rEJJei9qFHvSz096FAxZFw9mE2OmFSiPmrn46nnxutfN9xsHn9ki3o+SjTlnY4h74fEcU/c4buFgoqRRHGRREQyDBbizMm3QL43Ze0S/bLvFhHY2K9tEhCYWmQWckKDPs+LbDtvfgyDyZpxovioMykmwSXbAB5TpVTtUG7Bit7KWj6dYwTVOYxPC1Do+JW2CsD9F8NR6yBTnmV5WF4tGPux2WOH6x3SkYr361J+eXA1hUF/VDWmATI0wsAlE/ZF14Efl05hle6hlraG/xzeNDbJA001QA4FWgDQO1Sv0TeJeeH7ydRUXcouCKJ+jo2XcLqBmL7SIW3We/55p3y4Y2q/0lTefOVECdTcfHgjB5monhyINIfkozotuZ+ugjzl6ON+nBxk07chvXE=
   - secure: dnjdsBcnrLAV0fNC/C9W0F6s2eU3ePLNfl9jGanBis9nZvyPNvAVyouaAv8AoSqaaRrQU6izf/wl0D2VhjSVksQpOwDj4t1EjrYi8S/FKYk3Vbsc4/1q9/sXzZBUYEYAAy2mce50lC0knBlCqsEcFUKoNlA7pbvUjE/uOknCp8zioXf1Cjz3aMfXdX5U/r/5I4FOYulBoDt9PGOlKe3jylO14AQCSWEnuT6sXe19VxtVkMShrWPloJJa3bYoMvt+lMqbjTHCWB0xjCYhQEPP9Qah8WgrXGGpcOYsu7JtXbzziCDGdLRPz/CFcukeOsytysG5GiNheNJQ9YnCw6o+TmOD9ym2ZyVVbUty2Jkh/xYfR/fRaOrG+rSwgGODv1Oc66G8MZOzo4bIeS1NcO5w0HHlR+luagljI5Sf7oydUj87SwW04oS/vwnm1RAXEHIk8jhyPIBiBekyRWnIRVtZZPjSs9Z8Mf3CMQjQ3wcxmpmBMzS8CnkPqtvorWxXF7rGkFaUXZNYooL5uIcnFi9cIjpanxhnAEIuMn7E+sYiCfxYPxYSkq8bC44DeLXPtL9LbXcZVtK8kxLP4Z3Eoy1nev4OykJthC0XKu3XNDufpGRh/47le/+syhIb5T4tOAtiYF95w9pGOBZ0KlfTP2jMOLiRGliaN4fp8+T/9Q9E/CM=
+branches:
+  only:
+    - master
