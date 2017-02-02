@@ -7,13 +7,14 @@ before_cache:
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 before_install:
 - sudo apt-get install net-tools
-- sudo apt-get install mkdocs
+- sudo apt-get install python-pip
 cache:
   directories:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
 script:
 - test "${TRAVIS_PULL_REQUEST}" == "true" || test "${TRAVIS_BRANCH}" != "master" || ./gradlew bintrayUpload
+- sudo pip install mkdocs
 - mkdocs build
 - git config --global user.email "builds@travis-ci.com"
 - git config --global user.name "Travis CI"
