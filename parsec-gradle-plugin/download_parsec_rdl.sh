@@ -7,7 +7,7 @@ METADATA_FILE=metadata.xml
 BASE_PATH="https://github.com/ardielle/ardielle-tools/releases/download"
 DESTINATION_PATH="$DESTINATION_DIR/src/main/resources/rdl-bin"
 
-function download_rdl {
+function download_rdl() {
     DOWNLOAD_FILE=$1
     DIST_FILE=$2
 
