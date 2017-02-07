@@ -40,17 +40,6 @@ pluginBundle {
     }
 }
 
-tasks.getByName('release').outputs.upToDateWhen {
-    parsecGradlePluginVersion.toString() > releasedVersion.toString()
-}
-
-task updateInstallationVersion << {
-    def readme = new File("${projectDir}/README.md")
-    def releaseVersion = rootProject.property("version")
-    ant.replaceregexp(file: readme, match: "version : '\\S+'", replace: "version : '${releaseVersion}'")
-//    ant.replaceregexp(file: parentProperties, match: "parsecGradlePluginVersion\\s*=\\s*\\S+", replace: "parsecGradlePluginVersion = ${releaseVersion}")
-}
-
 task downloadParsecRdlGenerator(type: Exec) {
 
     commandLine "sh", "./download_parsec_rdl_generator.sh", project.property("parsecRdlGeneratorVersion"), projectDir.absolutePath
@@ -83,12 +72,7 @@ task downloadRdlBinary(type: Exec) {
 
 }
 
-//jar.dependsOn downloadParsecRdl
 jar.dependsOn downloadRdlBinary
 jar.dependsOn downloadParsecRdlGenerator
-//publishPlugins.dependsOn downloadParsecRdl
-//publishPlugins.mustRunAfter check
-//postProcess.dependsOn publishPlugins
 test.dependsOn downloadParsecRdlGenerator
 test.dependsOn downloadRdlBinary
-build.finalizedBy updateInstallationVersion
