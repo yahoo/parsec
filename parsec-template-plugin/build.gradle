@@ -27,30 +27,3 @@ dependencies {
     compile gradleApi()
 }
 
-//For plugin-publish plugin
-//pluginBundle {
-//    website = 'http://www.gradle.org/' //TODO: Replace with github link
-//    vcsUrl = 'https://github.com/gradle/gradle' //TODO: Replace with github link
-//    description = 'Parsec extension of gradle-templates'
-//    tags = ['templates', 'parsec']
-//    plugins {
-//         parsecTemplatesPlugin {
-//            id = 'com.yahoo.parsec.template-plugin'
-//            displayName = 'Parsec Template Plugin'
-//         }
-//    }
-//}
-
-// replace the installation version
-task updateInstallVersion()  {
-    def apply_file = new File('installation', 'apply.groovy')
-    def releaseVersion = rootProject.property("version")
-
-    ant.replaceregexp(file: apply_file, match: "\"com.yahoo.parsec:parsec-template-plugin:\\S+\"",
-              replace: "\"com.yahoo.parsec:parsec-template-plugin:${releaseVersion}\"" )
-
-}
-
-//publishPlugins.mustRunAfter check
-//postProcess.dependsOn publishPlugins
-build.finalizedBy updateInstallVersion

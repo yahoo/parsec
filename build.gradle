@@ -16,6 +16,7 @@ buildscript {
 }
 
 apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'net.researchgate.release'
 
 allprojects {
     group = 'com.yahoo.parsec'
@@ -23,7 +24,6 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'groovy'
     apply plugin: 'jacoco'
-    apply plugin: 'net.researchgate.release'
 
     jacocoTestReport {
         reports {
@@ -45,12 +45,6 @@ allprojects {
         }
     }
 
-    release {
-        failOnUnversionedFiles = false
-        failOnCommitNeeded = false
-        failOnSnapshotDependencies = false
-    }
-
     task preProcess << {
         logger.info("Executing Pre Release Build Processes...")
     }
@@ -63,6 +57,12 @@ allprojects {
     afterReleaseBuild.dependsOn postProcess
 }
 
+release {
+    failOnUnversionedFiles = false
+    failOnCommitNeeded = false
+    failOnSnapshotDependencies = false
+    tagTemplate = '$name-$version'
+}
 
 subprojects {
     apply plugin: 'maven'
@@ -82,11 +82,6 @@ subprojects {
         testCompile group: 'junit', name: 'junit', version: '4.12'
         testCompile group: 'cglib', name: 'cglib-nodep', version: '2.2'
     }
-
-    release{
-        tagTemplate = '$name-$version'
-    }
-
 
     bintray {
         user = System.getenv('BINTRAY_USER')
@@ -125,20 +120,15 @@ subprojects {
 
 def publishedProjects = subprojects.findAll()
 
-release {
-    buildTasks = ['releaseParsecGradlePlugin', 'releaseParsecBaseBuild', 'releaseParsecTemplatePlugin']
-}
-
-//Temporary tasks for a work around on task ordering with release plugin
-task releaseParsecGradlePlugin{ dependsOn('parsec-gradle-plugin:release') }
-task releaseParsecBaseBuild{ dependsOn('parsec-base-build:release') }
-task releaseParsecTemplatePlugin { dependsOn('parsec-template-plugin:release') }
-
 updateVersion << {
-    def readme = new File("./README.md")
-    def properties = new File("./gradle.properties")
-    def releaseVersion = project.property("release.version")
-    ant.replaceregexp(file: properties, match: "releasedVersion\\s*=\\s*\\S+", replace: "releasedVersion = ${releaseVersion}")
+    def releaseVersion = rootProject.property("version")
+    def apply_file = new File("parsec-template-plugin/installation/apply.groovy")
+
+    ant.replaceregexp(file: apply_file, match: "\"com.yahoo.parsec:parsec-template-plugin:\\S+\"",
+            replace: "\"com.yahoo.parsec:parsec-template-plugin:${releaseVersion}\"" )
+
+    def readme = new File("parsec-gradle-plugin/README.md")
+    ant.replaceregexp(file: readme, match: "version : '\\S+'", replace: "version : '${releaseVersion}'")
 }
 
 task jacocoRootReport (type: JacocoReport, group: 'Coverage reports'){
@@ -170,5 +160,3 @@ tasks.coveralls {
     dependsOn(jacocoRootReport)
 }
 
-//commented first per team members' discussions on 2016/12/21(Wed)
-//check.dependsOn(":parsec-integration-test:integrationTest")
