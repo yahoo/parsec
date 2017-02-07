@@ -62,9 +62,6 @@ release {
     failOnCommitNeeded = false
     failOnSnapshotDependencies = false
     tagTemplate = '$name-$version'
-    git {
-        requireBranch = ''
-    }
 }
 
 subprojects {
