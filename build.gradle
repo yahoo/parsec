@@ -61,7 +61,7 @@ release {
     failOnUnversionedFiles = false
     failOnCommitNeeded = false
     tagTemplate = '$name-$version'
-    newVersionCommitMessage = '[Gradle Release Plugin][ci skip] - new version commit: '
+    newVersionCommitMessage = '[Gradle Release Plugin][ci skip] new version release:'
 }
 
 subprojects {
