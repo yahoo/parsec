@@ -6,7 +6,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.yahoo.parsec:parsec-template-plugin:0.0.23-pre"
+    classpath "com.yahoo.parsec:parsec-template-plugin:0.0.24-pre"
   }
 }
 
