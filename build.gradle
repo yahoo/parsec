@@ -113,9 +113,6 @@ subprojects {
     }
 
     bintrayUpload.dependsOn check
-
-    //Only the root project will create a release tag
-    createReleaseTag.enabled = false
 }
 
 def publishedProjects = subprojects.findAll()
