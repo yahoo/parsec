@@ -88,9 +88,6 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                     List<String> options = new ArrayList<>();
                     options.add("-o");
                     options.add(pathUtils.getDocPath());
-                    if (!pluginExtension.getSwaggerRootPath().isEmpty()) {
-                        options.add("-xb=" + pluginExtension.getSwaggerRootPath());
-                    }
                     if (pluginExtension.isGenerateParsecError()) {
                         options.add("-xe=true");
                     }
