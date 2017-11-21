@@ -1,4 +1,4 @@
-#Parsec [![Build Status](https://travis-ci.org/yahoo/parsec.svg?branch=master)](https://travis-ci.org/yahoo/parsec)
+# Parsec [![Build Status](https://travis-ci.org/yahoo/parsec.svg?branch=master)](https://travis-ci.org/yahoo/parsec)
 
 Parsec is a collection of libraries and utilities built upon **Gradle** and **Jersey2**, with the reliance on [RDL](https://ardielle.github.io/).
 It is designed to reduce the effort of building web service applications,
