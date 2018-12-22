@@ -2,8 +2,7 @@ site_name: Parsec Development Document
 repo_url: https://github.com/yahoo/parsec
 copyright: Copyright &copy; 2017 <a href="http://www.yahoo.com">Yahoo! Inc.</a>
 theme:
-  name: null
-  custom_dir: 'theme_material'
+  name: 'material'
   language: en
   palette:
       primary: 'indigo'
