@@ -1,6 +1,21 @@
 site_name: Parsec Development Document
 repo_url: https://github.com/yahoo/parsec
 copyright: Copyright &copy; 2017 <a href="http://www.yahoo.com">Yahoo! Inc.</a>
+theme:
+  name: null
+  custom_dir: 'theme_material'
+  language: en
+  palette:
+      primary: 'indigo'
+      accent: 'indigo'
+  feature:
+      tabs: false
+  include_search_page: true
+  font:
+    text: Roboto
+    code: Roboto Mono  
+  logo:
+    icon: "\uE80C"
 pages:
     - 'Home': index.md
     - 'User Guide':
