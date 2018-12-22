@@ -118,6 +118,7 @@
             <li><a href="#input-validation">Input Validation</a></li>
             <li><a href="#parsec-config">Parsec Config</a></li>
             <li><a href="#parsec-client">Parsec Client</a></li>
+            <li><a href="#web-utilities">Web Utilities</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -626,7 +627,54 @@ occur in a 2 seconds window, only the first request will be executed
 while all remaining requests will be responded from cache. If fresh copy
 of the data is required (for example, during a get update get scenario),
 please use ParsecAsyncHttpClient.criticalExecute method or
-ParsecAsyncHttpRequest.Builder.setCriticalGet method.</p></div>
+ParsecAsyncHttpRequest.Builder.setCriticalGet method.</p>
+<h3 id="log-requests-and-responses">Log Requests and Responses</h3>
+<p>Requests and responses to and from a ParsecAsyncHttpClient can be logged with <code>RequestResponeLoggingFilter</code>. Follow the 3 simple steps to enable this:</p>
+<pre><code>RequestFilter loggingFilter = new RequestResponeLoggingFilter(new NingJsonFormatter());  //  (1)
+
+ParsecAsyncHttpClient parsecHttpClient = new ParsecAsyncHttpClient.Builder()
+            .setAcceptAnyCertificate(true)
+            .addRequestFilter(loggingFilter) 
+            .build();                                                                   //   (2)
+</code></pre>
+<ol>
+<li>Create a <code>RequestResponeLoggingFilter</code>, as shown above (1).<ol>
+<li>The only mandatory parameter for the constructor is an instance of <code>NingRequestResponseFormatter</code>, which dedicates how to present the Request and Response data in the log.</li>
+<li>By default, the filter only logs <code>post</code>, <code>put</code> and <code>delete</code> requests and response. This can be changed with a different instance of <code>BiPredicate&lt;Request, ResponseOrThrowable&gt;</code> </li>
+<li>By   default, the logger name for request/response logging is <code>parsec.clients.reqresp_log</code>. This can be changed by passing a different name in the constructor. </li>
+</ol>
+</li>
+<li>Add the filter to the ParsecAsyncHttpClient builder method, as shown above (2).</li>
+<li>Configure <code>logback.xml</code> to enable the trace level of "parsec.clients.reqresp_log" logger.  Note that the log name is configurable from the <code>RequestResponeLoggingFilter</code> constructor.</li>
+</ol>
+<pre><code>&lt;configuration scan=&quot;false&quot;&gt;
+    &lt;!-- omit the other settings --&gt;
+    &lt;logger name=&quot;parsec.clients.reqresp_log&quot; level=&quot;trace&quot; /&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+<p>See also</p>
+<ul>
+<li><a href="https://github.com/yahoo/parsec-libraries/blob/master/parsec-clients/src/main/java/com/yahoo/parsec/filters/RequestResponeLoggingFilter.java">RequestResponeLoggingFilter.java</a></li>
+<li><a href="https://github.com/yahoo/parsec-libraries/blob/master/parsec-clients/src/test/java/com/yahoo/parsec/filters/RequestResponeLoggingFilterTest.java">RequestResponeLoggingFilterTest.java</a></li>
+<li><a href="https://github.com/yahoo/parsec-libraries/blob/master/parsec-clients/src/main/java/com/yahoo/parsec/filters/NingJsonFormatter.java">NingJsonFormatter.java</a></li>
+</ul>
+<h2 id="web-utilities">Web Utilities</h2>
+<h3 id="requestresponseloggingfilter">RequestResponseLoggingFilter</h3>
+<p>Add <code>RequestResponseLoggingFilter</code> to your servlet filter chain to log reqeusts and responses received and sent by the service.</p>
+<p>If you use a <code>ServletContextListener</code>, add the following code to the <code>contextInitialized</code> method: </p>
+<pre><code>@Override
+public void contextInitialized(ServletContextEvent sce) {
+    //..omit unrelated code
+
+    ServletContext servletContext = sce.getServletContext();
+    FilterRegistration.Dynamic loggingFilter = servletContext.addFilter(&quot;RequestResponseLoggingFilter&quot;,
+            RequestResponseLoggingFilter.class);
+
+    loggingFilter.setInitParameter(&quot;formatter-classname&quot;, &quot;com.yahoo.parsec.web.JsonFormatter&quot;);
+    loggingFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, &quot;/endpointUri/*&quot;);
+}
+</code></pre></div>
         </div>
 
         <footer class="col-md-12">

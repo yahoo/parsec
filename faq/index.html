@@ -191,72 +191,62 @@ fooFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST) ,true,&quo
 fooFilter.setInitParameter(&quot;key&quot;, &quot;val&quot;);
 </code></pre>
 
-<h3 id="how-do-i-return-a-non-200-http-status-code-when-the-request-is-successful-such-as-created-201-accepted-202">How do I return a non-200 http status code when the request is successful, such as Created (201), Accepted (202)?</h3>
+<h3 id="how-do-i-define-different-constraint-rules-in-same-data-object-for-different-endpoint">How do I define different constraint rules in same data object for different endpoint?</h3>
+<p>Use "validation groups". Please refer to <a href="../util/#input-validation">Input Validation</a> for details.</p>
+<h3 id="is-it-possible-for-one-data-object-to-extend-another">Is it possible for one data object to extend another?</h3>
 <ul>
-<li>specify 2xx (non 200) status code mapping to your data object</li>
+<li>In RDL, you can define one type that include another as shown below:  </li>
+<li>In this RDL snippet, a type Foo is defined. And a type Bar include fields in type Foo, with one additional field <code>barField</code>.</li>
 </ul>
-<p><em>Sample.rdl</em></p>
-<pre><code>type User struct {
-    string name (x_size=&quot;min=3,max=5&quot;);
-    int32 age;
+<pre><code>
+type Foo struct {
+   String  fooField1;
+   String  fooField2;
+   Int32   fooField3;
+
 }
 
-resource User POST &quot;/user&quot; {
-    User user (x_must_validate);
 
-    expected CREATED;
-    exceptions {
-        ResourceError INTERNAL_SERVER_ERROR;
-        ResourceError BAD_REQUEST;
-        ResourceError UNAUTHORIZED;
-        ResourceError FORBIDDEN;
-        User CREATED;
-    }
+type Bar Foo {
+    String    barField;
 }
+
 </code></pre>
 
-<ul>
-<li>throw ResourceException with you expected success status code with
-    response data object</li>
-</ul>
-<p><em>SampleHandlerImpl.java</em></p>
-<pre><code>public class SampleHandlerImpl implements SampleHandler {
+<p>The generated Java classes of these two type doesn't preserve the "inheritance" relationship, but all fields from the "base" type <code>Foo</code> would be included in class <code>Bar</code>, as shown below:</p>
+<pre><code>
+public final class Foo implements java.io.Serializable {
 
-   @Override
-   public User postUser(ResourceContext context, User user) {
-       //return &quot;Hello &quot; + user.getName() + &quot;!\n&quot;;
-       throw new ResourceException(ResourceException.CREATED, user);
-   }
+    private String fooField1;    // (1)
 
-   ....
+    private String fooField2;    // (2)
+
+    private int fooField3;       // (3)
+
+
+
+    // unrelated code is omitted ...
 }
+
+
+
+public final class Bar implements java.io.Serializable {
+
+    private String fooField1;    // (1)
+
+    private String fooField2;    // (2)
+
+    private int fooField3;       // (3)
+
+    private String barField;     // (4)
+
+
+    // unrelated code is omitted ...
+}
+
 </code></pre>
 
-<p><em>the output will be</em></p>
-<pre><code>$ curl -v -H &quot;Content-Type: application/json&quot; http://wifi-9-152.tpcity.corp.yahoo.com:8080/api/sample/v1/user -d '{&quot;age&quot;:0, &quot;name&quot;:&quot;name&quot;}'
-
-* Hostname was NOT found in DNS cache
-*   Trying 10.82.9.152...
-* Connected to wifi-9-152.tpcity.corp.yahoo.com (10.82.9.152) port 8080 (#0)
-&gt; POST /api/sample/v1/user HTTP/1.1
-&gt; User-Agent: curl/7.37.1
-&gt; Host: wifi-9-152.tpcity.corp.yahoo.com:8080
-&gt; Accept: */*
-&gt; Content-Type: application/json
-&gt; Content-Length: 24
-&gt;
-* upload completely sent off: 24 out of 24 bytes
-&lt; HTTP/1.1 201 Created
-&lt; Date: Fri, 04 Sep 2015 03:12:37 GMT
-&lt; Content-Type: application/json
-&lt; Content-Length: 23
-* Server Jetty(9.3.0.M2) is not blacklisted
-&lt; Server: Jetty(9.3.0.M2)
-&lt;
-* Connection #0 to host wifi-9-152.tpcity.corp.yahoo.com left intact
-{&quot;age&quot;:0,&quot;name&quot;:&quot;name&quot;}
-</code></pre>
-
+<p>Note that both classes have 3 common fields (<code>fooField1</code>, <code>fooField2</code> and <code>fooField3</code> ) however <code>Bar</code> doesn't extend from another.</p>
 <h3 id="how-do-i-define-customized-error-layout">How do I define customized error layout?</h3>
 <ul>
 <li>define your error object in .rdl, and specify status code mapping to
@@ -404,7 +394,6 @@ public class SampleResources {
 <h2 id="pending">Pending</h2>
 <h3 id="what-does-public-void-authorizestring-action-string-resource-string-trusteddomain-mean-rdl-generated-code-and-how-do-i-use-it">What does “public void authorize(String action, String resource, String trustedDomain)” mean (rdl generated code) and how do I use it?</h3>
 <h3 id="how-do-i-define-webapp-root-path">How do I define webapp root path?</h3>
-<h3 id="how-do-i-define-different-constraint-rule-in-same-data-object-for-different-endpoint">How do I define different constraint rule in same data object for different endpoint?</h3>
 <h3 id="how-do-i-define-multipart-in-rdl">How do I define multipart in rdl?</h3></div>
         </div>
 
