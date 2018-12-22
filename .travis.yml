@@ -16,7 +16,7 @@ script:
 - git config --global user.email "builds@travis-ci.com"
 - git config --global user.name "Travis CI"
 - if [ "${TRAVIS_PULL_REQUEST}" == "false" ];then git checkout master;git remote set-url origin "https://$GITHUBKEY@github.com/yahoo/parsec";./gradlew release; ./gradlew bintrayUpload; fi
-- sudo pip install mkdocs==0.17.4 mkdocs-material wcwidth Markdown==2.6.11
+- sudo pip install mkdocs mkdocs-material
 - mkdocs build
 - if [ "${TRAVIS_PULL_REQUEST}" == "false" ];then git fetch && git fetch origin gh-pages:gh-pages;mkdocs gh-deploy --clean;fi
 after_success:
