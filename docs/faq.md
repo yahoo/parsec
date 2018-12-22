@@ -78,76 +78,69 @@ fooFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST) ,true,"/*"
 fooFilter.setInitParameter("key", "val");
 ```
 
-### How do I return a non-200 http status code when the request is successful, such as Created (201), Accepted (202)?
+### How do I define different constraint rules in same data object for different endpoint?
 
--   specify 2xx (non 200) status code mapping to your data object
+Use "validation groups". Please refer to [Input Validation](/util/#input-validation) for details.
 
-*Sample.rdl*
+
+### Is it possible for one data object to extend another? 
+
+- In RDL, you can define one type that include another as shown below:  
+- In this RDL snippet, a type Foo is defined. And a type Bar include fields in type Foo, with one additional field `barField`.
 
 ```
-type User struct {
-    string name (x_size="min=3,max=5");
-    int32 age;
+
+type Foo struct {
+   String  fooField1;
+   String  fooField2;
+   Int32   fooField3;
+  
 }
 
-resource User POST "/user" {
-    User user (x_must_validate);
 
-    expected CREATED;
-    exceptions {
-        ResourceError INTERNAL_SERVER_ERROR;
-        ResourceError BAD_REQUEST;
-        ResourceError UNAUTHORIZED;
-        ResourceError FORBIDDEN;
-        User CREATED;
-    }
+type Bar Foo {
+    String    barField;
 }
-```
-
--   throw ResourceException with you expected success status code with
-    response data object
-
-*SampleHandlerImpl.java*
 
 ```
-public class SampleHandlerImpl implements SampleHandler {
 
-   @Override
-   public User postUser(ResourceContext context, User user) {
-       //return "Hello " + user.getName() + "!\n";
-       throw new ResourceException(ResourceException.CREATED, user);
-   }
+The generated Java classes of these two type doesn't preserve the "inheritance" relationship, but all fields from the "base" type `Foo` would be included in class `Bar`, as shown below:
 
-   ....
+```
+
+public final class Foo implements java.io.Serializable {
+
+    private String fooField1;    // (1)
+
+    private String fooField2;    // (2)
+
+    private int fooField3;       // (3)
+
+
+
+    // unrelated code is omitted ...
 }
+
+
+
+public final class Bar implements java.io.Serializable {
+
+    private String fooField1;    // (1)
+
+    private String fooField2;    // (2)
+
+    private int fooField3;       // (3)
+
+    private String barField;     // (4)
+
+
+    // unrelated code is omitted ...
+}
+
 ```
 
-*the output will be*
+Note that both classes have 3 common fields (`fooField1`, `fooField2` and `fooField3` ) however `Bar` doesn't extend from another.
 
-```
-$ curl -v -H "Content-Type: application/json" http://wifi-9-152.tpcity.corp.yahoo.com:8080/api/sample/v1/user -d '{"age":0, "name":"name"}'
-
-* Hostname was NOT found in DNS cache
-*   Trying 10.82.9.152...
-* Connected to wifi-9-152.tpcity.corp.yahoo.com (10.82.9.152) port 8080 (#0)
-> POST /api/sample/v1/user HTTP/1.1
-> User-Agent: curl/7.37.1
-> Host: wifi-9-152.tpcity.corp.yahoo.com:8080
-> Accept: */*
-> Content-Type: application/json
-> Content-Length: 24
->
-* upload completely sent off: 24 out of 24 bytes
-< HTTP/1.1 201 Created
-< Date: Fri, 04 Sep 2015 03:12:37 GMT
-< Content-Type: application/json
-< Content-Length: 23
-* Server Jetty(9.3.0.M2) is not blacklisted
-< Server: Jetty(9.3.0.M2)
-<
-* Connection #0 to host wifi-9-152.tpcity.corp.yahoo.com left intact
-{"age":0,"name":"name"}
-```
 
 ### How do I define customized error layout?
 
@@ -298,6 +291,7 @@ dependencies {
 -   Detail info could reference [slf4j
     doc](http://www.slf4j.org/manual.html#projectDep)
 
+
 Pending
 -------
 
@@ -305,6 +299,5 @@ Pending
 
 ### How do I define webapp root path?
 
-### How do I define different constraint rule in same data object for different endpoint?
 
 ### How do I define multipart in rdl?
