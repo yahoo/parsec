@@ -15,7 +15,8 @@ cache:
 script:
 - git config --global user.email "builds@travis-ci.com"
 - git config --global user.name "Travis CI"
-- if [ "${TRAVIS_PULL_REQUEST}" == "false" ];then git checkout master;git remote set-url origin "https://$GITHUBKEY@github.com/yahoo/parsec";./gradlew release; ./gradlew bintrayUpload; fi
+- if [ "${TRAVIS_PULL_REQUEST}" == "false" ];then git checkout master;git remote set-url origin "https://$GITHUBKEY@github.com/yahoo/parsec";./gradlew release; fi
+- test "${TRAVIS_PULL_REQUEST}" != "false" || test "${TRAVIS_BRANCH}" != "master" || ./gradlew bintrayUpload --info
 - sudo pip install mkdocs
 - mkdocs build
 - if [ "${TRAVIS_PULL_REQUEST}" == "false" ];then git fetch && git fetch origin gh-pages:gh-pages;mkdocs gh-deploy --clean;fi
