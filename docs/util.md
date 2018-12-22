@@ -465,3 +465,64 @@ of the data is required (for example, during a get update get scenario),
 please use ParsecAsyncHttpClient.criticalExecute method or
 ParsecAsyncHttpRequest.Builder.setCriticalGet method.
 
+### Log Requests and Responses
+
+Requests and responses to and from a ParsecAsyncHttpClient can be logged with `RequestResponeLoggingFilter`. Follow the 3 simple steps to enable this:
+
+
+	RequestFilter loggingFilter = new RequestResponeLoggingFilter(new NingJsonFormatter());  //  (1)
+
+	ParsecAsyncHttpClient parsecHttpClient = new ParsecAsyncHttpClient.Builder()
+                .setAcceptAnyCertificate(true)
+                .addRequestFilter(loggingFilter) 
+                .build();                                                                   //   (2)
+                
+                
+
+1. Create a `RequestResponeLoggingFilter`, as shown above (1).
+	1. The only mandatory parameter for the constructor is an instance of `NingRequestResponseFormatter`, which dedicates how to present the Request and Response data in the log.
+	2. By default, the filter only logs `post`, `put` and `delete` requests and response. This can be changed with a different instance of `BiPredicate<Request, ResponseOrThrowable>` 
+	3. By	default, the logger name for request/response logging is `parsec.clients.reqresp_log`. This can be changed by passing a different name in the constructor. 
+2. Add the filter to the ParsecAsyncHttpClient builder method, as shown above (2).
+3. Configure `logback.xml` to enable the trace level of "parsec.clients.reqresp_log" logger.  Note that the log name is configurable from the `RequestResponeLoggingFilter` constructor.
+
+```
+<configuration scan="false">
+    <!-- omit the other settings -->
+    <logger name="parsec.clients.reqresp_log" level="trace" />
+</configuration>
+``` 	
+ 
+ 
+ See also
+ 
+ - [RequestResponeLoggingFilter.java](https://github.com/yahoo/parsec-libraries/blob/master/parsec-clients/src/main/java/com/yahoo/parsec/filters/RequestResponeLoggingFilter.java)
+ - [RequestResponeLoggingFilterTest.java](https://github.com/yahoo/parsec-libraries/blob/master/parsec-clients/src/test/java/com/yahoo/parsec/filters/RequestResponeLoggingFilterTest.java)
+ - [NingJsonFormatter.java](https://github.com/yahoo/parsec-libraries/blob/master/parsec-clients/src/main/java/com/yahoo/parsec/filters/NingJsonFormatter.java)
+
+
+
+Web Utilities
+---------------
+
+### RequestResponseLoggingFilter
+
+Add `RequestResponseLoggingFilter` to your servlet filter chain to log reqeusts and responses received and sent by the service.
+
+If you use a `ServletContextListener`, add the following code to the `contextInitialized` method: 
+
+
+```
+@Override
+public void contextInitialized(ServletContextEvent sce) {
+    //..omit unrelated code
+
+    ServletContext servletContext = sce.getServletContext();
+    FilterRegistration.Dynamic loggingFilter = servletContext.addFilter("RequestResponseLoggingFilter",
+            RequestResponseLoggingFilter.class);
+
+    loggingFilter.setInitParameter("formatter-classname", "com.yahoo.parsec.web.JsonFormatter");
+    loggingFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/endpointUri/*");
+}
+```    
+
