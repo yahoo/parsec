@@ -12,7 +12,7 @@ import spock.lang.Specification
 public class ParsecGradleBuildTest extends Specification{
 
     @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
     private File buildFile;
     private File propertyFile;
 
