@@ -12,7 +12,7 @@ buildscript{
         jcenter()
     }
     dependencies{
-        classpath group: 'com.yahoo.parsec'  , name: 'parsec-gradle-plugin'   , version : '1.0.6'
+        classpath group: 'com.yahoo.parsec'  , name: 'parsec-gradle-plugin'   , version : '1.0.7'
     }
 }
 ```
