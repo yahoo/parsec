@@ -20,9 +20,9 @@ class SampleWebappTest extends Specification {
     }
 
     @Test
-    def "uri /api/static/swagger-ui should get code 200"() {
+    def "uri /api/static/swagger-ui/index.html should get code 200"() {
         given:
-        pathUri = "/api/static/swagger-ui/"
+        pathUri = "/api/static/swagger-ui/index.html"
 
         when:
         resp = restClient.get(path : pathUri)
@@ -170,7 +170,7 @@ class SampleWebappTest extends Specification {
         def detail = result.error.detail[0]
         result.error.code == 0
         detail.type == "validationError"
-        detail.message == "may not be null"
+        detail.message == "must not be null"
         detail.path == "SampleResources.putUsersById.namedUser.occupation"
         detail.messageTemplate == "{javax.validation.constraints.NotNull.message}"
     }

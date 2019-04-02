@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 PARSEC_RDL_VERSION="$1"
-DESTINATION_DIR=$2
+PARSEC_RDL_EXEC_FILE_VERSION="$2"
+DESTINATION_DIR=$3
 
 METADATA_FILE=metadata.xml
 BASE_PATH="https://github.com/ardielle/ardielle-tools/releases/download"
@@ -26,5 +27,5 @@ download_rdl () {
     fi
 }
 
-download_rdl "rdl-$PARSEC_RDL_VERSION-darwin.zip" "rdl.zip"
-download_rdl "rdl-$PARSEC_RDL_VERSION-linux.tgz" "rdl.tgz"
+download_rdl "rdl_${PARSEC_RDL_EXEC_FILE_VERSION}_darwin.zip" "rdl.zip"
+download_rdl "rdl_${PARSEC_RDL_EXEC_FILE_VERSION}_linux.tgz" "rdl.tgz"
