@@ -75,6 +75,16 @@ public class ParsecPluginExtension {
      */
     private boolean handleUncaughtExceptions = false;
 
+    /**
+     * If not empty, the value will be appended to the start of swagger basePath
+     */
+    private String finalName = "/api";
+
+    /**
+     * If set the addition path, the generators will copy swagger Json files to the path
+     */
+    private String additionSwaggerJsonPath;
+
 
     public String getSourcePath() {
         return sourcePath;
@@ -179,4 +189,22 @@ public class ParsecPluginExtension {
     public void setHandleUncaughtExceptions(boolean handleUncaughtExceptions) {
         this.handleUncaughtExceptions = handleUncaughtExceptions;
     }
+
+    public String getFinalName() {
+        return finalName;
+    }
+
+    public void setFinalName(String finalName) {
+        this.finalName = finalName;
+    }
+
+    public String getAdditionSwaggerJsonPath() {
+        return additionSwaggerJsonPath;
+    }
+
+    public void setAdditionSwaggerJsonPath(String additionSwaggerJsonPath) {
+        this.additionSwaggerJsonPath = additionSwaggerJsonPath;
+    }
+
+
 }

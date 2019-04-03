@@ -51,6 +51,7 @@ class ParsecGenerateTest extends Specification {
             def files = projectDir.listFiles()
             pluginExtension.handleUncaughtExceptions = handleUncaughtExceptions
             pluginExtension.generateParsecError = generateParsecError
+            pluginExtension.additionSwaggerJsonPath = tempDir + "/build/swagger-json"
 
         when:
             task.executeTask()
@@ -64,6 +65,10 @@ class ParsecGenerateTest extends Specification {
             assertFilesExists(
                     ["_local-swagger-jsons.js", "sample_swagger.json"] as String[],
                     tempDir + "/build/generated-resources/parsec/doc"
+            )
+            assertFilesExists(
+                    ["_local-swagger-jsons.js", "sample_swagger.json"] as String[],
+                    tempDir + "/build/swagger-json"
             )
             assertFilesExists(
                     ["ParsecApplication.java", "ParsecWebListener.java", "ParsecWrapperServlet.java", "ParsecValidationGroups.java"] as String[],

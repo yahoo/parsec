@@ -13,7 +13,9 @@ import org.testng.Assert;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 /**
@@ -94,7 +96,9 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                     if (pluginExtension != null && !pluginExtension.getSwaggerSchema().isEmpty()) {
                         options.add("-xc=" + pluginExtension.getSwaggerSchema());
                     }
-
+                    if (pluginExtension.getFinalName() != null && !pluginExtension.getFinalName().isEmpty()) {
+                        options.add("-xf=" + pluginExtension.getFinalName());
+                    }
                     rdlGenerate(pathUtils.getRdlBinaryPath(), "parsec-swagger", file, options);
                 }
 
@@ -143,6 +147,15 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
             if (pluginExtension.isGenerateSwagger()) {
                 Set<Path> swaggerJsons = fileUtils.findFiles(pathUtils.getDocPath(), "regex:^\\w+_swagger\\.json$");
                 if (!swaggerJsons.isEmpty()) {
+                    boolean needCopySwaggerJson = false;
+                    if (pluginExtension.getAdditionSwaggerJsonPath() != null
+                            && !pluginExtension.getAdditionSwaggerJsonPath().isEmpty()) {
+                        needCopySwaggerJson = true;
+                    }
+                    if (needCopySwaggerJson) {
+                        File f = new File(pluginExtension.getAdditionSwaggerJsonPath());
+                        fileUtils.checkAndCreateDirectory(f.getAbsolutePath());
+                    }
                     StringBuilder stringBuilder = new StringBuilder()
                         .append(getOverwriteWarningCommentBlock())
                         .append("var localSwaggerJsons = [")
@@ -161,6 +174,19 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                         }
 
                         stringBuilder.append(System.getProperty("line.separator"));
+                        if (needCopySwaggerJson) {
+                            try {
+                                Files.copy(
+                                    swaggerJson,
+                                    new File(pluginExtension.getAdditionSwaggerJsonPath()
+                                            + File.separator + swaggerJson.getFileName()).toPath(),
+                                    StandardCopyOption.REPLACE_EXISTING
+                                );
+                            } catch (IOException e) {
+                                getLogger().warn("Copy File Error: " + swaggerJson.toString()
+                                        + " => " + pluginExtension.getAdditionSwaggerJsonPath());
+                            }
+                        }
                     }
 
                     stringBuilder.append("]");
@@ -169,6 +195,19 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                         pathUtils.getDocPath() + "/_local-swagger-jsons.js",
                         true
                     );
+                    if (needCopySwaggerJson) {
+                        try {
+                            Files.copy(
+                                    new File(pathUtils.getDocPath() + "/_local-swagger-jsons.js").toPath(),
+                                    new File(pluginExtension.getAdditionSwaggerJsonPath()
+                                            + "/_local-swagger-jsons.js").toPath(),
+                                    StandardCopyOption.REPLACE_EXISTING
+                            );
+                        } catch (IOException e) {
+                            getLogger().warn("Copy File Error: _local-swagger-jsons.js => "
+                                    + pluginExtension.getAdditionSwaggerJsonPath());
+                        }
+                    }
                 }
             }
 
