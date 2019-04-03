@@ -16,6 +16,9 @@ buildscript{
         maven{
             url "https://plugins.gradle.org/m2/"
         }
+        maven{
+            url 'http://dl.bintray.com/cjstehno/public'
+        }
         jcenter()
         mavenLocal()
     }
@@ -25,7 +28,7 @@ buildscript{
         classpath group: 'com.yahoo.parsec'              , name: 'parsec-gradle-plugin'   , version: parsecGradleVersion
 
         classpath group: 'org.kt3k.gradle.plugin'        , name: 'coveralls-gradle-plugin', version: coverallsVersion
-        classpath group: 'org.akhikhl.gretty'            , name: 'gretty'                 , version: grettyVersion
+        classpath group: 'org.gretty'                    , name: 'gretty'                 , version: grettyVersion
     }
 }
 
@@ -40,7 +43,8 @@ apply plugin: 'maven'
 apply plugin: 'osgi'
 apply plugin: 'application'
 apply plugin: 'war'
-apply plugin: org.akhikhl.gretty.GrettyPlugin
+if (!project.plugins.findPlugin(org.akhikhl.gretty.GrettyPlugin))
+  project.apply(plugin: org.akhikhl.gretty.GrettyPlugin)
 
 //Code Enhancement Plugins
 apply plugin: 'checkstyle'
@@ -74,7 +78,7 @@ dependencies {
     //External Libraries
     compile group: 'org.apache.commons'             , name: 'commons-lang3'               , version: commonsLang3Version
     compile group: 'javax.ws.rs'                    , name: 'javax.ws.rs-api'             , version: javaxWsRsVersion
-    compile group: 'org.codehaus.jackson'           , name: 'jackson-mapper-asl'          , version: jacksonMapperVersion
+    compile group: 'com.fasterxml.jackson.core'     , name: 'jackson-databind'            , version: jacksonMapperVersion
 
     compile group: 'com.google.guava'               , name: 'guava'                       , version: guavaVersion
     compile group: 'org.glassfish.jersey.core'      , name: 'jersey-common'               , version: jerseyVersion
@@ -82,9 +86,17 @@ dependencies {
     compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet'    , version: jerseyVersion
     compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-jetty-http' , version: jerseyVersion
     compile group: 'org.glassfish.jersey.media'     , name: 'jersey-media-moxy'           , version: jerseyVersion
+    compile group: 'org.glassfish.jersey.inject'    , name: 'jersey-hk2'                  , version: jerseyVersion
     compile group: 'org.eclipse.jetty'              , name: 'jetty-servlet'               , version: jettyVersion
     compile group: 'org.slf4j'                      , name: 'slf4j-api'                   , version: slf4jVersion
+    compile group: 'org.slf4j'                      , name: 'slf4j-simple'                , version: slf4jVersion
     providedCompile group: 'javax.servlet'          , name: 'servlet-api'                 , version: servletApiVersion
+
+    //Java 11 compatible
+    compile group: 'javax.xml.bind'                 , name: 'jaxb-api'                    , version: '2.3.0'
+    compile group: 'com.sun.xml.bind'               , name: 'jaxb-core'                   , version: '2.3.0.1'
+    compile group: 'com.sun.xml.bind'               , name: 'jaxb-impl'                   , version: '2.3.0.1'
+    compile group: 'javax.activation'               , name: 'activation'                  , version: '1.1.1'
 
     //Testing Libraries
     testCompile group: 'org.spockframework'   , name: 'spock-core'       , version: spockVersion
@@ -129,6 +141,7 @@ tasks.withType(Checkstyle){
 gretty {
     extraResourceBase extraResourcePath
     contextPath = parsecWebappRootPath
+    servletContainer = 'jetty9.4'
 }
 
 war {

@@ -32,45 +32,50 @@ dependencies {
 def testDir = new File("$projectDir/sandbox")
 
 task integrationTest(type: Test) {
-    testClassesDir = sourceSets.integrationTest.output.classesDir
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
     systemProperty "parsec_test.testDir", "$testDir/parsec_sample_webapp"
     outputs.upToDateWhen{ false }
 }
 
-task preTestBuild << {
-    if (testDir.exists()){
-        testDir.deleteDir()
-    }
-    testDir.mkdirs()
-    String resourcePath = new File("${projectDir}/src/integration-test/resources").absolutePath
-    def engine = new groovy.text.SimpleTemplateEngine()
+task preTestBuild {
+  doLast {
+        if (testDir.exists()){
+            testDir.deleteDir()
+        }
+        testDir.mkdirs()
+        String resourcePath = new File("${projectDir}/src/integration-test/resources").absolutePath
+        def engine = new groovy.text.SimpleTemplateEngine()
 
-    //Create template file for plugin
-    def template_file = new File("${resourcePath}/build.gradle.tmpl")
-    def binding = ["baseBuildProjectDir": "${project(":parsec-base-build").projectDir.absolutePath}",
-                   "parsecGradleVersion": "${project(":parsec-gradle-plugin").version}"]
-    def template = engine.createTemplate(template_file).make(binding)
-    new File("${testDir.absolutePath}/build.gradle.tmpl").write(template.toString())
+        //Create template file for plugin
+        def template_file = new File("${resourcePath}/build.gradle.tmpl")
+        def binding = ["baseBuildProjectDir": "${project(":parsec-base-build").projectDir.absolutePath}",
+                       "parsecGradleVersion": "${project(":parsec-gradle-plugin").version}"]
+        def template = engine.createTemplate(template_file).make(binding)
+        new File("${testDir.absolutePath}/build.gradle.tmpl").write(template.toString())
 
-    //Create build.gradle file
-    def build_file = new File("${resourcePath}/build.gradle")
-    def binding2 = ["parsecTemplateVersion" : "${project(":parsec-template-plugin").version}",
-                    "grettyVersion": "${project.property("packageVersion.gretty")}"]
-    def template2 = engine.createTemplate(build_file).make(binding2)
-    new File("${testDir.absolutePath}/build.gradle").write(template2.toString())
+        //Create build.gradle file
+        def build_file = new File("${resourcePath}/build.gradle")
+        def binding2 = ["parsecTemplateVersion" : "${project(":parsec-template-plugin").version}",
+                        "grettyVersion": "${project.property("packageVersion.gretty")}"]
+        def template2 = engine.createTemplate(build_file).make(binding2)
+        new File("${testDir.absolutePath}/build.gradle").write(template2.toString())
+        
+        def build_setting = new File("${resourcePath}/settings.gradle")
+        new File("${testDir.absolutePath}/settings.gradle").write(build_setting.getText())
 
-    //Create process
-    def command = ["sh", projectDir.absolutePath + "/before_test_build.sh", testDir.absolutePath, projectDir.absolutePath]
-    def process = new ProcessBuilder(command).directory(projectDir).redirectErrorStream(true).start()
-    def sout = new StringBuilder(), serr = new StringBuilder()
-    process.consumeProcessOutput(sout, serr)
-    process.waitForOrKill(120000) //Wait for 2 mins or kill process regardless
-    println sout
-    if(process.exitValue() == 0){
-        process.destroy() //Note that Jetty is still running at this point
-    } else {
-        throw new GradleException("Starting jetty fail")
+        //Create process
+        def command = ["sh", projectDir.absolutePath + "/before_test_build.sh", testDir.absolutePath, projectDir.absolutePath]
+        def process = new ProcessBuilder(command).directory(projectDir).redirectErrorStream(true).start()
+        def sout = new StringBuilder(), serr = new StringBuilder()
+        process.consumeProcessOutput(sout, serr)
+        process.waitForOrKill(120000) //Wait for 2 mins or kill process regardless
+        println sout
+        if(process.exitValue() == 0){
+            process.destroy() //Note that Jetty is still running at this point
+        } else {
+            throw new GradleException("Starting jetty fail")
+        }
     }
 }
 
