@@ -11,7 +11,7 @@ buildscript {
     dependencies {
         classpath group: 'net.researchgate'         , name: 'gradle-release'         , version: '2.8.0'
         classpath group: 'org.kt3k.gradle.plugin'   , name: 'coveralls-gradle-plugin', version: '2.8.2'
-        classpath group: 'com.jfrog.bintray.gradle' , name: 'gradle-bintray-plugin'  , version: '1.8.4'
+        classpath group: 'com.jfrog.bintray.gradle' , name: 'gradle-bintray-plugin'  , version: '1.+'
     }
 }
 
@@ -120,6 +120,7 @@ subprojects {
         }
     }
 
+    afterReleaseBuild.dependsOn check
     bintrayUpload.dependsOn check
 }
 

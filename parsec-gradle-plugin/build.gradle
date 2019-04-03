@@ -81,7 +81,7 @@ pmd {
     ruleSets = []
 }
 
-jar.dependsOn downloadRdlBinary
-jar.dependsOn downloadParsecRdlGenerator
+compileJava.dependsOn downloadRdlBinary
+compileJava.dependsOn downloadParsecRdlGenerator
 test.dependsOn downloadParsecRdlGenerator
 test.dependsOn downloadRdlBinary
