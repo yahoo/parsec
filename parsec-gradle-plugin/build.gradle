@@ -25,6 +25,7 @@ dependencies {
     compile gradleApi()
     compile group: 'org.apache.commons', name: 'commons-compress', version: project.property('packageVersion.commons-compress')
     compile group: 'commons-codec'     , name: 'commons-codec'   , version: project.property('packageVersion.commons-codec')
+    compile group: 'org.testng'        , name: 'testng'          , version: project.property('packageVersion.testng')
 }
 
 pluginBundle {
@@ -57,7 +58,7 @@ task downloadParsecRdlGenerator(type: Exec) {
 
 task downloadRdlBinary(type: Exec) {
     def osName = System.getProperty("os.name").equals("Mac OS X") ? "darwin" : "linux";
-    commandLine "sh", "./download_parsec_rdl.sh", project.property("parsecRdlVersion"), projectDir.absolutePath, osName
+    commandLine "sh", "./download_parsec_rdl.sh", project.property("parsecRdlVersion"), project.property("parsecRdlExecFileVersion"), projectDir.absolutePath, osName
     outputs.upToDateWhen {
 
         //Return upToDate when parsec_rdl version matches
@@ -72,7 +73,15 @@ task downloadRdlBinary(type: Exec) {
 
 }
 
-jar.dependsOn downloadRdlBinary
-jar.dependsOn downloadParsecRdlGenerator
+pmd {
+    toolVersion = "6.8.0"
+    ignoreFailures = true
+    consoleOutput = true
+    ruleSetFiles = files("${projectDir.absolutePath}/config/pmd/ruleSets.xml")
+    ruleSets = []
+}
+
+compileJava.dependsOn downloadRdlBinary
+compileJava.dependsOn downloadParsecRdlGenerator
 test.dependsOn downloadParsecRdlGenerator
 test.dependsOn downloadRdlBinary

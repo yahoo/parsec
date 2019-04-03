@@ -9,14 +9,18 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.researchgate'        , name: 'gradle-release'         , version: '2.4.0'
-        classpath group: 'org.kt3k.gradle.plugin'  , name: 'coveralls-gradle-plugin', version: '2.6.3'
-        classpath group: 'com.jfrog.bintray.gradle' , name: 'gradle-bintray-plugin' , version: '1.7.3'
+        classpath group: 'net.researchgate'         , name: 'gradle-release'         , version: '2.8.0'
+        classpath group: 'org.kt3k.gradle.plugin'   , name: 'coveralls-gradle-plugin', version: '2.8.2'
+        classpath group: 'com.jfrog.bintray.gradle' , name: 'gradle-bintray-plugin'  , version: '1.+'
     }
 }
 
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'net.researchgate.release'
+
+wrapper {
+    gradleVersion = '5.2.1'
+}
 
 allprojects {
     group = 'com.yahoo.parsec'
@@ -45,12 +49,16 @@ allprojects {
         }
     }
 
-    task preProcess << {
+    task preProcess {
+      doLast {
         logger.info("Executing Pre Release Build Processes...")
+      }
     }
 
-    task postProcess << {
+    task postProcess {
+      doLast {
         logger.info("Executing Post Release Build Processes...")
+      }
     }
 
     beforeReleaseBuild.dependsOn preProcess
@@ -77,8 +85,8 @@ subprojects {
 
     dependencies {
         testCompile gradleTestKit()
-        testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4'
-        testCompile group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4'
+        testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.4'
+        testCompile group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.5'
         testCompile group: 'junit', name: 'junit', version: '4.12'
         testCompile group: 'cglib', name: 'cglib-nodep', version: '2.2'
     }
@@ -112,20 +120,23 @@ subprojects {
         }
     }
 
+    afterReleaseBuild.dependsOn check
     bintrayUpload.dependsOn check
 }
 
 def publishedProjects = subprojects.findAll()
 
-updateVersion << {
-    def releaseVersion = rootProject.property("version")
-    def apply_file = new File("parsec-template-plugin/installation/apply.groovy")
+updateVersion {
+    doLast {
+        def releaseVersion = rootProject.property("version")
+        def apply_file = new File("parsec-template-plugin/installation/apply.groovy")
 
-    ant.replaceregexp(file: apply_file, match: "\"com.yahoo.parsec:parsec-template-plugin:\\S+\"",
-            replace: "\"com.yahoo.parsec:parsec-template-plugin:${releaseVersion}\"" )
+        ant.replaceregexp(file: apply_file, match: "\"com.yahoo.parsec:parsec-template-plugin:\\S+\"",
+                replace: "\"com.yahoo.parsec:parsec-template-plugin:${releaseVersion}\"" )
 
-    def readme = new File("parsec-gradle-plugin/README.md")
-    ant.replaceregexp(file: readme, match: "version : '\\S+'", replace: "version : '${releaseVersion}'")
+        def readme = new File("parsec-gradle-plugin/README.md")
+        ant.replaceregexp(file: readme, match: "version : '\\S+'", replace: "version : '${releaseVersion}'")
+    }
 }
 
 task jacocoRootReport (type: JacocoReport, group: 'Coverage reports'){

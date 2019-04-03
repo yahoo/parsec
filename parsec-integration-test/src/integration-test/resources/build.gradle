@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
         maven{
             url 'http://dl.bintray.com/cjstehno/public'
@@ -9,12 +10,13 @@ buildscript {
 
     dependencies {
         classpath group: 'com.yahoo.parsec', name: 'parsec-template-plugin', version: '${parsecTemplateVersion}'
-        classpath group: 'org.akhikhl.gretty', name: 'gretty', version: '${grettyVersion}'
+        classpath 'org.gretty:gretty:+'
     }
 }
 
-apply plugin: com.yahoo.parsec.template.ParsecTemplatePlugin
-apply plugin: org.akhikhl.gretty.GrettyPlugin
+if (!project.plugins.hasPlugin('com.yahoo.parsec.template-plugin'))
+    apply plugin: com.yahoo.parsec.template.ParsecTemplatePlugin
+apply plugin: 'org.gretty'
 parsecTemplate{
     extraTemplate {
         'build.gradle' template: './build.gradle.tmpl'
