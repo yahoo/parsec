@@ -47,3 +47,5 @@ parsec {
 |generateParsecError     |boolean |false         |Generate Parsec error objects|
 |useSmartMethodNames     |boolean |true          |Generator will use resource params for generating resource and handler method names|
 |handleUncaughtExceptions|boolean |false         |Generate exception mapper for handling uncaught exception|
+|finaleName              |String  |"/api"        |The value will be appended to the start of swagger basePath|
+|additionSwaggerJsonPath |String  |""            |If set the addition path, the generators will copy swagger Json files to the path|
