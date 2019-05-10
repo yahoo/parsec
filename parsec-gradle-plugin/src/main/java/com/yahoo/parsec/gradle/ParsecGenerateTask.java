@@ -160,9 +160,10 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                         .append(getOverwriteWarningCommentBlock())
                         .append("var localSwaggerJsons = [")
                         .append(System.getProperty("line.separator"));
-
+                    List<Path> sortedSwaggerJsons = new ArrayList<>(swaggerJsons);
+                    Collections.sort(sortedSwaggerJsons);
                     int i = 0;
-                    for (Path swaggerJson : swaggerJsons) {
+                    for (Path swaggerJson : sortedSwaggerJsons) {
                         i++;
 
                         stringBuilder.append("\t\"")
