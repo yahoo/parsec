@@ -161,7 +161,12 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                         .append("var localSwaggerJsons = [")
                         .append(System.getProperty("line.separator"));
                     List<Path> sortedSwaggerJsons = new ArrayList<>(swaggerJsons);
-                    Collections.sort(sortedSwaggerJsons);
+                    Collections.sort(sortedSwaggerJsons, new Comparator<Path>() {
+                        @Override
+                        public int compare(Path o1, Path o2) {
+                            return o1.getFileName().toString().compareTo(o2.getFileName().toString());
+                        }
+                    });
                     int i = 0;
                     for (Path swaggerJson : sortedSwaggerJsons) {
                         i++;
