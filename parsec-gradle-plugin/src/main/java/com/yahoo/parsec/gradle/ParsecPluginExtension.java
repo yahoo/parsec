@@ -66,6 +66,11 @@ public class ParsecPluginExtension {
     private boolean generateParsecError = false;
 
     /**
+     * If set to true, the generators will generate classname with _Pc suffix.
+     */
+    private boolean generateModelClassNamePcSuffix = false;
+
+    /**
      * If set to true, the generators will use resource params for generating resource and handler method names
      */
     private boolean useSmartMethodNames = true;
@@ -172,6 +177,14 @@ public class ParsecPluginExtension {
 
     public void setGenerateParsecError(boolean generateParsecError) {
         this.generateParsecError = generateParsecError;
+    }
+
+    public boolean isGenerateModelClassNamePcSuffix() {
+        return generateModelClassNamePcSuffix;
+    }
+
+    public void setGenerateModelClassNamePcSuffix(boolean generateModelClassNamePcSuffix) {
+        this.generateModelClassNamePcSuffix = generateModelClassNamePcSuffix;
     }
 
     public boolean isUseSmartMethodNames() {
