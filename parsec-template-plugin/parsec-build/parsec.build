@@ -154,6 +154,7 @@ parsec {
     useSmartMethodNames = false
     handleUncaughtExceptions = parsecHandleUncaughtExceptions
     generateParsecError = parsecGenerateParsecError
+    generateModelClassNamePcSuffix = false
 }
 
 //if(project.properties["profile"]=='it'){

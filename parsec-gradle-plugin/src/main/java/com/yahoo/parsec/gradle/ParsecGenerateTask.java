@@ -133,6 +133,9 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                     if (pluginExtension.isGenerateParsecError()) {
                         options.add("-xe=true");
                     }
+                    if (pluginExtension.isGenerateModelClassNamePcSuffix()) {
+                        options.add("-xpc=true");
+                    }
                     rdlGenerate(
                         pathUtils.getRdlBinaryPath(),
                         "parsec-java-server",

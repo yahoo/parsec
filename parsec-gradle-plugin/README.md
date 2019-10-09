@@ -34,18 +34,19 @@ parsec {
 }
 ```
 
-| Property               | Type   | Default      | Description |
-|:----------------------:|:------:|:------------:|:-----------:|
-|sourcePath              |String  |"src/main/rdl"|The path where the RDL files are located |
-|sourceFiles             |String  |"*.rdl"       |The rdl files to be parsed, separated by commas. If not indicated every RDL file will be parsed|
-|swaggerRootPath         |String  |""            |The value will be put in frontend of the generated swagger schema's endpoint|
-|generateModel           |boolean |true          |Generate model classes for the RDL types|
-|generateServer          |boolean |true          |Generate JAX-RS (jersey) server classes|
-|generateSwagger         |boolean |true          |Generate swagger resources|
-|generateJson            |boolean |false         |Generate JSON resources|
-|generateHandlerImpl     |boolean |true          |Generate handler's implementation|
-|generateParsecError     |boolean |false         |Generate Parsec error objects|
-|useSmartMethodNames     |boolean |true          |Generator will use resource params for generating resource and handler method names|
-|handleUncaughtExceptions|boolean |false         |Generate exception mapper for handling uncaught exception|
-|finaleName              |String  |"/api"        |The value will be appended to the start of swagger basePath|
-|additionSwaggerJsonPath |String  |""            |If set the addition path, the generators will copy swagger Json files to the path|
+| Property                       | Type   | Default      | Description |
+|:------------------------------:|:------:|:------------:|:-----------:|
+|sourcePath                      |String  |"src/main/rdl"|The path where the RDL files are located |
+|sourceFiles                     |String  |"*.rdl"       |The rdl files to be parsed, separated by commas. If not indicated every RDL file will be parsed|
+|swaggerRootPath                 |String  |""            |The value will be put in frontend of the generated swagger schema's endpoint|
+|generateModel                   |boolean |true          |Generate model classes for the RDL types|
+|generateServer                  |boolean |true          |Generate JAX-RS (jersey) server classes|
+|generateSwagger                 |boolean |true          |Generate swagger resources|
+|generateJson                    |boolean |false         |Generate JSON resources|
+|generateHandlerImpl             |boolean |true          |Generate handler's implementation|
+|generateParsecError             |boolean |false         |Generate Parsec error objects|
+|useSmartMethodNames             |boolean |true          |Generator will use resource params for generating resource and handler method names|
+|handleUncaughtExceptions        |boolean |false         |Generate exception mapper for handling uncaught exception|
+|finaleName                      |String  |"/api"        |The value will be appended to the start of swagger basePath|
+|additionSwaggerJsonPath         |String  |""            |If set the addition path, the generators will copy swagger Json files to the path|
+|generateModelClassNamePcSuffix  |boolean |false         |Generator will append _Pc for domain object class name|
