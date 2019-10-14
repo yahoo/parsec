@@ -58,7 +58,7 @@ public class ParsecPluginExtension {
     /**
      * If set to true, the generated code will include client implementation
      */
-    private boolean generateClient = true;
+    private boolean generateClient = false;
 
     /**
      * If set to true, the generators will generate parsec error objects.
