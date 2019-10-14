@@ -50,3 +50,4 @@ parsec {
 |finaleName                      |String  |"/api"        |The value will be appended to the start of swagger basePath|
 |additionSwaggerJsonPath         |String  |""            |If set the addition path, the generators will copy swagger Json files to the path|
 |generateModelClassNamePcSuffix  |boolean |false         |Generator will append _Pc for domain object class name|
+|accessorNamingStyle             |String  |""            |Generator will gen getter/setter method naming style by user specify, ex: java_bean or upper_first

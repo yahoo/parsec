@@ -78,11 +78,17 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                 getLogger().info("Parsing " + file);
 
                 if (pluginExtension.isGenerateClient()) {
+                    List<String> options = new ArrayList<>();
+                    options.add("-o");
+                    options.add(pathUtils.getGeneratedSourcesPath());
+                    if (pluginExtension.isGenerateModelClassNamePcSuffix()) {
+                        options.add("-xpc=true");
+                    }
                     rdlGenerate(
                             pathUtils.getRdlBinaryPath(),
                             "parsec-java-client",
                             file,
-                            Arrays.asList("-o", pathUtils.getGeneratedSourcesPath())
+                            options
                     );
                 }
 
@@ -112,11 +118,20 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                 }
 
                 if (pluginExtension.isGenerateModel()) {
+                    List<String> options = new ArrayList<>();
+                    options.add("-o");
+                    options.add(pathUtils.getGeneratedSourcesPath());
+                    if (pluginExtension.isGenerateModelClassNamePcSuffix()) {
+                        options.add("-xpc=true");
+                    }
+                    if (pluginExtension.isAccessorNamingStyle()) {
+                        options.add("-xnamingStyle=" + pluginExtension.getAccessorNamingStyle());
+                    }
                     rdlGenerate(
                         pathUtils.getRdlBinaryPath(),
                         "parsec-java-model",
                         file,
-                        Arrays.asList("-o", pathUtils.getGeneratedSourcesPath())
+                        options
                     );
                 }
 

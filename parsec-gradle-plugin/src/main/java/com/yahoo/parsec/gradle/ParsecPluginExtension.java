@@ -90,6 +90,10 @@ public class ParsecPluginExtension {
      */
     private String additionSwaggerJsonPath;
 
+    /**
+     * If not empty, the generator will use naming style specify by user
+     */
+    private String accessorNamingStyle = "";
 
     public String getSourcePath() {
         return sourcePath;
@@ -219,5 +223,15 @@ public class ParsecPluginExtension {
         this.additionSwaggerJsonPath = additionSwaggerJsonPath;
     }
 
+    public String getAccessorNamingStyle() {
+        return accessorNamingStyle;
+    }
 
+    public void setAccessorNamingStyle(String accessorNamingStyle) {
+        this.accessorNamingStyle = accessorNamingStyle;
+    }
+
+    public boolean isAccessorNamingStyle() {
+        return accessorNamingStyle != null && !accessorNamingStyle.isEmpty();
+    }
 }
