@@ -317,6 +317,7 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
             command.addAll(2, options);
 
             getLogger().info(" Generating " + type);
+            getLogger().debug("execute command: {}", command);
             ProcessBuilder processBuilder = new ProcessBuilder(command)
                 .directory(getProject().getProjectDir())
                 .inheritIO();

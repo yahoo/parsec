@@ -96,7 +96,7 @@ class ParsecGenerateTest extends Specification {
 
         where:
             handleUncaughtExceptions | generateParsecError | parsecErrorGenerated
-            false                    | false               | true
+            false                    | false               | false
             true                     | false               | true
             false                    | true                | true
             true                     | true                | true
