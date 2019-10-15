@@ -141,12 +141,18 @@ public class ParsecGenerateTask extends AbstractParsecGradleTask {
                     options.add(pathUtils.getGeneratedSourcesPath());
                     if (pluginExtension.isGenerateHandlerImpl()) {
                         options.add("-xi=true");
+                    } else {
+                        options.add("-xi=false");
                     }
                     if (pluginExtension.isUseSmartMethodNames()) {
                         options.add("-xp=true");
+                    } else {
+                        options.add("-xp=false");
                     }
                     if (pluginExtension.isGenerateParsecError()) {
                         options.add("-xe=true");
+                    } else {
+                        options.add("-xe=false");
                     }
                     if (pluginExtension.isGenerateModelClassNamePcSuffix()) {
                         options.add("-xpc=true");
