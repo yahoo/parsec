@@ -37,7 +37,7 @@ cd $TEST_BASE_DIR && $GRADLE createParsecProject -PgroupId=com.example -Partifac
 ##parse rdl and code generated
 echo "[INFO] generate code & inject test implementation to sample handler .. "
 cp $CURRENT_DIR/src/integration-test/resources/sample.rdl $TEST_SOURCE_DIR/src/main/rdl/
-cd $TEST_SOURCE_DIR && $GRADLE parsec-generate -Pprofile=it
+cd $TEST_SOURCE_DIR && $GRADLE --debug parsec-generate -Pprofile=it
 cp -f $CURRENT_DIR/src/integration-test/resources/SampleHandlerImpl.java $TEST_SOURCE_DIR/src/main/java/com/example/
 
 ##run local jetty
