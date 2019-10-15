@@ -63,7 +63,7 @@ public class ParsecPluginExtension {
     /**
      * If set to true, the generators will generate parsec error objects.
      */
-    private boolean generateParsecError = false;
+    private boolean generateParsecError = true;
 
     /**
      * If set to true, the generators will generate classname with _Pc suffix.
@@ -73,7 +73,7 @@ public class ParsecPluginExtension {
     /**
      * If set to true, the generators will use resource params for generating resource and handler method names
      */
-    private boolean useSmartMethodNames = true;
+    private boolean useSmartMethodNames = false;
 
     /**
      * If set to true, the generators will generate exception mapper for handling uncaught exception
