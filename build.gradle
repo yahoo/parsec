@@ -136,6 +136,10 @@ updateVersion {
 
         def readme = new File("parsec-gradle-plugin/README.md")
         ant.replaceregexp(file: readme, match: "version : '\\S+'", replace: "version : '${releaseVersion}'")
+
+        def gradleProp = new File("parsec-base-build/src/main/resources/gradle.properties")
+        ant.replaceregexp(file: gradleProp, match: "parsecGradleVersion = \\S+",
+                replace: "parsecGradleVersion: ${releaseVersion}")
     }
 }
 
