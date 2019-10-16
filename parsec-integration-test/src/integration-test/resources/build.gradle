@@ -14,6 +14,10 @@ buildscript {
     }
 }
 
+parsec {
+    useSmartMethodNames = true
+}
+
 if (!project.plugins.hasPlugin('com.yahoo.parsec.template-plugin'))
     apply plugin: com.yahoo.parsec.template.ParsecTemplatePlugin
 apply plugin: 'org.gretty'
