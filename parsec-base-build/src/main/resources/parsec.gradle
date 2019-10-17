@@ -89,7 +89,6 @@ dependencies {
     compile group: 'org.glassfish.jersey.inject'    , name: 'jersey-hk2'                  , version: jerseyVersion
     compile group: 'org.eclipse.jetty'              , name: 'jetty-servlet'               , version: jettyVersion
     compile group: 'org.slf4j'                      , name: 'slf4j-api'                   , version: slf4jVersion
-    compile group: 'org.slf4j'                      , name: 'slf4j-simple'                , version: slf4jVersion
     providedCompile group: 'javax.servlet'          , name: 'servlet-api'                 , version: servletApiVersion
 
     //Java 11 compatible
