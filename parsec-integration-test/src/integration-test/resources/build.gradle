@@ -1,21 +1,17 @@
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
         mavenCentral()
         maven{
             url 'http://dl.bintray.com/cjstehno/public'
         }
-        mavenLocal()
     }
 
     dependencies {
         classpath group: 'com.yahoo.parsec', name: 'parsec-template-plugin', version: '${parsecTemplateVersion}'
         classpath 'org.gretty:gretty:+'
     }
-}
-
-parsec {
-    useSmartMethodNames = true
 }
 
 if (!project.plugins.hasPlugin('com.yahoo.parsec.template-plugin'))
