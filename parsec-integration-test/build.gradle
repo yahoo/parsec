@@ -69,12 +69,13 @@ task preTestBuild {
         def process = new ProcessBuilder(command).directory(projectDir).redirectErrorStream(true).start()
         def sout = new StringBuilder(), serr = new StringBuilder()
         process.consumeProcessOutput(sout, serr)
-        process.waitForOrKill(120000) //Wait for 2 mins or kill process regardless
+        process.waitForOrKill(600000) //Wait for 10 mins or kill process regardless
         println sout
-        if(process.exitValue() == 0){
+        def exitValue = process.exitValue()
+        if(exitValue == 0){
             process.destroy() //Note that Jetty is still running at this point
         } else {
-            throw new GradleException("Starting jetty fail")
+            throw new GradleException("Starting jetty fail. Process exit value: " + exitValue)
         }
     }
 }
