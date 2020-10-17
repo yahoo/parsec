@@ -2,47 +2,47 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>/</loc>
-     <lastmod>2019-10-17</lastmod>
+     <lastmod>2020-10-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/quickstart/</loc>
-     <lastmod>2019-10-17</lastmod>
+     <lastmod>2020-10-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/main/</loc>
-     <lastmod>2019-10-17</lastmod>
+     <lastmod>2020-10-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/util/</loc>
-     <lastmod>2019-10-17</lastmod>
+     <lastmod>2020-10-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/testing/</loc>
-     <lastmod>2019-10-17</lastmod>
+     <lastmod>2020-10-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/endpoint/</loc>
-     <lastmod>2019-10-17</lastmod>
+     <lastmod>2020-10-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/faq/</loc>
-     <lastmod>2019-10-17</lastmod>
+     <lastmod>2020-10-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/todo/</loc>
-     <lastmod>2019-10-17</lastmod>
+     <lastmod>2020-10-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/reference/</loc>
-     <lastmod>2019-10-17</lastmod>
+     <lastmod>2020-10-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
