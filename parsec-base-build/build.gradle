@@ -3,12 +3,8 @@ buildscript{
         maven {
             url "https://plugins.gradle.org/m2/"
         }
-        jcenter()
     }
 
-    dependencies{
-        classpath group: 'com.jfrog.bintray.gradle' , name: 'gradle-bintray-plugin', version: project.property('packageVersion.gradle-bintray-plugin')
-    }
 }
 
 /*

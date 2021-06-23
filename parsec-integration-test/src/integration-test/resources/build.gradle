@@ -1,11 +1,7 @@
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
         mavenCentral()
-        maven{
-            url 'http://dl.bintray.com/cjstehno/public'
-        }
     }
 
     dependencies {

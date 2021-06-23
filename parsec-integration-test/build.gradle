@@ -1,5 +1,4 @@
 tasks.findByName('install')?.enabled = false
-tasks.findByName('bintrayUpload')?.enabled = false
 tasks.findByName('publishToMavenLocal')?.enabled = false
 
 sourceSets {

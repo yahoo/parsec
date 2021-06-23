@@ -3,7 +3,6 @@ buildscript{
         maven{
             url "https://plugins.gradle.org/m2/"
         }
-        jcenter()
     }
     dependencies{
         classpath group: 'com.gradle.publish', name: 'plugin-publish-plugin', version: project.property('packageVersion.plugin-publish-plugin')
@@ -13,12 +12,10 @@ buildscript{
 apply plugin: 'pmd'
 apply plugin: "com.gradle.plugin-publish"
 
-
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
@@ -28,13 +25,17 @@ dependencies {
     compile group: 'org.testng'        , name: 'testng'          , version: project.property('packageVersion.testng')
 }
 
+group="com.yahoo.parsec"
+
 pluginBundle {
-    website = 'http://www.gradle.org/' //TODO: replace with official link
-    vcsUrl = 'https://github.com/gradle/gradle' //TODO: replace with official github
+    website = 'https://github.com/yahoo/parsec'
+    vcsUrl = 'https://github.com/yahoo/parsec'
     description = 'Parsec gradle plugin'
     tags = ['gradle-plugin', 'parsec']
     plugins {
         parsecGradlePlugin {
+            //2021 April bintray EOL.
+            //https://plugins.gradle.org/plugin/com.yahoo.parsec.gradle-plugin
             id = 'com.yahoo.parsec.gradle-plugin'
             displayName = 'Parsec Gradle Plugin'
         }
