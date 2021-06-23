@@ -16,17 +16,11 @@ buildscript{
         maven{
             url "https://plugins.gradle.org/m2/"
         }
-        maven{
-            url 'http://dl.bintray.com/cjstehno/public'
-        }
-        jcenter()
         mavenLocal()
     }
 
     dependencies {
-
-        classpath group: 'com.yahoo.parsec'              , name: 'parsec-gradle-plugin'   , version: parsecGradleVersion
-
+        classpath "gradle.plugin.com.yahoo.parsec:parsec-gradle-plugin:1.2.1.17"
         classpath group: 'org.kt3k.gradle.plugin'        , name: 'coveralls-gradle-plugin', version: coverallsVersion
         classpath group: 'org.gretty'                    , name: 'gretty'                 , version: grettyVersion
     }
@@ -63,7 +57,6 @@ targetCompatibility = 1.8
 repositories {
 
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
