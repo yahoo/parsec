@@ -16,6 +16,7 @@ download_rdl () {
 
     echo "Fetching $DOWNLOAD_FILE version: $PARSEC_RDL_VERSION"
 
+    mkdir -p $DESTINATION_PATH
     HTTP_RESPONSE_CODE=`curl -w "%{http_code}" -L "$URL_PATH" -o $DESTINATION_PATH/$DIST_FILE`
     if [ "$HTTP_RESPONSE_CODE" -ne 200 ]; then
         echo "ERROR: Could not download $DIST_FILE: $PARSEC_RDL_VERSION"
